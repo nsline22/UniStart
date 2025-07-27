@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">UniStart</string>
+    <string name="select_device">Choose device</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="enter_command"> Enter a command...</string> <!-- Добавили пробел в начале -->
+</resources>

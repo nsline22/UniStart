@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="40dp">
+
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:contentDescription="UniStart"
+            android:src="@mipmap/ic_launcher_foreground"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UniStart"
+            android:textColor="@color/material_dynamic_primary70"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="35dp" />
+
+        <!-- Выбор Bluetooth устройства -->
+        <Spinner
+            android:id="@+id/deviceSpinner"
+            android:layout_width="300dp"
+            android:layout_height="33dp"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="@drawable/spinner_popup_background"
+            android:prompt="@string/select_device"
+            android:layout_marginBottom="15dp" />
+
+        <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/connect"
+            android:backgroundTint="?attr/colorPrimary"
+            android:textColor="@color/black"
+            app:cornerRadius="12dp" />
+
+        <View
+            android:id="@+id/connectionIndicator"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/connection_indicator" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/outputTextView"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:background="@drawable/output_background"
+            android:padding="14dp"
+            android:textColor="@color/material_dynamic_primary60"
+            android:textSize="14sp"
+            android:scrollbars="vertical" />
+
+        <!-- Поле для ввода команд с кнопкой отправки -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/commandEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Enter a command..."
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:background="@drawable/edittext_background"
+                android:textColor="@color/white"
+                android:textColorHint="#AAAAAA"
+                android:padding="12dp"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/buttonSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="@color/black"
+                android:padding="12dp"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+
+        <!-- Кнопки команд -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="1dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="Ignition"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="Start"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonF"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="List cards"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+
+            <Button
+                android:id="@+id/buttonA"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="Add card"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonL"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="LED"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+
+            <Button
+                android:id="@+id/buttonU"
+                android:layout_width="160dp"
+                android:layout_height="60dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:text="Unlock"
+                android:textColor="@color/black"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/signlink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="t.me/nsline22"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:textColorLink="@color/material_dynamic_primary50"
+            android:textSize="10sp"
+            android:padding="15dp" />
+    </LinearLayout>
+</ScrollView>

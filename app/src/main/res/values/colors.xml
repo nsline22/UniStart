@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Дополнительные цвета для темы -->
+    <color name="accent_purple">@color/material_dynamic_primary70</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background_dark">@color/material_dynamic_neutral_variant10</color>
+    <color name="snackbar_bg">@color/material_dynamic_neutral_variant20</color>
+    <color name="snackbar_text">@color/material_dynamic_primary80</color>
+    <color name="connected_color">?attr/colorPrimary</color>
+    <color name="disconnected_color">@android:color/darker_gray</color>
+</resources>
