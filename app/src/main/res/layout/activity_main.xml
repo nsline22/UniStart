@@ -38,7 +38,7 @@
         <Spinner
             android:id="@+id/deviceSpinner"
             android:layout_width="300dp"
-            android:layout_height="33dp"
+            android:layout_height="35dp"
             android:background="@drawable/spinner_background"
             android:popupBackground="@drawable/spinner_popup_background"
             android:prompt="@string/select_device"
@@ -58,7 +58,8 @@
             android:text="@string/connect"
             android:backgroundTint="?attr/colorPrimary"
             android:textColor="@color/black"
-            app:cornerRadius="12dp" />
+            app:cornerRadius="12dp"
+            android:drawableLeft="@drawable/link" />
 
         <View
             android:id="@+id/connectionIndicator"
@@ -99,8 +100,8 @@
                 android:focusableInTouchMode="true"
                 android:clickable="true"
                 android:background="@drawable/edittext_background"
-                android:textColor="@color/white"
-                android:textColorHint="#AAAAAA"
+                android:textColor="?attr/colorPrimary"
+                android:textColorHint="@color/edittexthint_color"
                 android:padding="12dp"
                 android:layout_marginEnd="4dp" />
 
@@ -112,7 +113,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:textColor="@color/black"
                 android:padding="12dp"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableRight="@drawable/send"/>
         </LinearLayout>
 
         <!-- Кнопки команд -->
@@ -131,7 +133,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Ignition"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/ign" />
 
             <Button
                 android:id="@+id/button2"
@@ -141,7 +144,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Start"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/start" />
 
         </LinearLayout>
 
@@ -160,7 +164,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="List cards"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/ls" />
 
             <Button
                 android:id="@+id/buttonA"
@@ -170,7 +175,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Add card"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/add" />
 
         </LinearLayout>
 
@@ -189,7 +195,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="LED"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/led" />
 
             <Button
                 android:id="@+id/buttonU"
@@ -198,7 +205,8 @@
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Unlock"
                 android:textColor="@color/black"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableLeft="@drawable/un" />
         </LinearLayout>
 
         <TextView
