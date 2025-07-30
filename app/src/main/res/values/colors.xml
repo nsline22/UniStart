@@ -10,4 +10,5 @@
     <color name="connected_color">?attr/colorPrimary</color>
     <color name="disconnected_color">@android:color/darker_gray</color>
     <color name="edittexthint_color">@color/material_dynamic_primary50</color>
+    <color name="icolor">@color/material_dynamic_tertiary60</color>
 </resources>

@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +27,7 @@ import java.util.*
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.animation.AnimationUtils
+import com.nsline22.UniStart.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +56,11 @@ class MainActivity : AppCompatActivity() {
     private val statusUpdateInterval = 30000L
     private val REQUEST_PERMISSION_CODE = 1001
 
+    // Для хранения последнего выбранного устройства
+    private lateinit var sharedPreferences: SharedPreferences
+    private val PREFS_NAME = "UniStartPrefs"
+    private val LAST_DEVICE_KEY = "lastDeviceAddress"
+
     private fun requestBluetoothPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val permission = Manifest.permission.BLUETOOTH_CONNECT
@@ -62,10 +70,8 @@ class MainActivity : AppCompatActivity() {
                 val shouldShowRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
 
                 if (shouldShowRationale) {
-                    // Показываем системный запрос
                     ActivityCompat.requestPermissions(this, arrayOf(permission), REQUEST_PERMISSION_CODE)
                 } else {
-                    // Если пользователь выбрал "Не спрашивать снова"
                     ActivityCompat.requestPermissions(this, arrayOf(permission), REQUEST_PERMISSION_CODE)
                 }
             } else {
@@ -89,7 +95,6 @@ class MainActivity : AppCompatActivity() {
                 setupBluetooth()
             } else {
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                    // Пользователь выбрал "не спрашивать снова"
                     showSettingsDialog()
                 } else {
                     showMessage("Permission needed for Bluetooth")
@@ -120,11 +125,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Инициализация SharedPreferences
+        sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
         initViews()
         requestBluetoothPermission()
         setupButtons()
         setupEditText()
-        // Все элементы интерфейса доступны с самого начала
         updateUIForConnectedState(false)
 
         commandEditText.postDelayed({
@@ -164,6 +171,37 @@ class MainActivity : AppCompatActivity() {
         refreshPairedDevices()
     }
 
+    @SuppressLint("MissingPermission")
+    private fun refreshPairedDevices() {
+        pairedDevices = bluetoothAdapter.bondedDevices
+        val deviceList = mutableListOf<String>()
+        val deviceAddresses = mutableListOf<String>()
+
+        pairedDevices.forEach { device ->
+            deviceList.add("${device.name} (${device.address})")
+            deviceAddresses.add(device.address)
+        }
+
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.spinner_item,
+            deviceList
+        )
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+        deviceSpinner.adapter = adapter
+
+        // Восстановление последнего выбранного устройства
+        val lastDeviceAddress = sharedPreferences.getString(LAST_DEVICE_KEY, null)
+        if (lastDeviceAddress != null && deviceAddresses.contains(lastDeviceAddress)) {
+            val position = deviceAddresses.indexOf(lastDeviceAddress)
+            deviceSpinner.setSelection(position)
+        }
+
+        if (deviceList.isEmpty()) {
+            showMessage("No paired devices or bluetooth turned off")
+        }
+    }
+
     private val receiveRunnable = Runnable {
         val buffer = ByteArray(1024)
         var bytes: Int
@@ -176,7 +214,6 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread {
                         outputTextView.append(receivedData)
 
-                        // Автоматическая прокрутка вниз
                         val scrollAmount = outputTextView.layout.getLineTop(outputTextView.lineCount) - outputTextView.height
                         if (scrollAmount > 0) {
                             outputTextView.scrollTo(0, scrollAmount)
@@ -245,47 +282,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (ev.action == MotionEvent.ACTION_DOWN) {
-            val v = currentFocus
-            if (v is EditText) {
-                val outRect = android.graphics.Rect()
-                v.getGlobalVisibleRect(outRect)
-                if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
-                    v.clearFocus()
-                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(v.windowToken, 0)
-                }
-            }
-        }
-        return super.dispatchTouchEvent(ev)
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun refreshPairedDevices() {
-        pairedDevices = bluetoothAdapter.bondedDevices
-        val deviceList = mutableListOf<String>()
-
-        pairedDevices.forEach { device ->
-            deviceList.add("${device.name} (${device.address})")
-        }
-
-        val adapter = ArrayAdapter(
-            this,
-            R.layout.spinner_item,
-            deviceList
-        )
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        deviceSpinner.adapter = adapter
-
-        if (deviceList.isEmpty()) {
-            showMessage("No paired devices or bluetooth turned off")
-        }
-    }
-
     @SuppressLint("MissingPermission")
     private fun connectToSelectedDevice() {
-        // Показываем уведомление о попытке подключения
         showMessage("Connecting...")
         startBlinkingIndicator()
 
@@ -303,6 +301,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val selectedDevice = pairedDevices.elementAt(selectedPosition)
+
+        // Сохраняем выбранное устройство
+        sharedPreferences.edit().putString(LAST_DEVICE_KEY, selectedDevice.address).apply()
 
         Thread {
             try {
@@ -375,7 +376,6 @@ class MainActivity : AppCompatActivity() {
                 updateUIForConnectedState(false)
                 showMessage("Disconnected or unable to connect")
                 stopBlinkingIndicator()
-
             }
         }
     }
@@ -420,15 +420,17 @@ class MainActivity : AppCompatActivity() {
         connectButton.text = if (connected) getString(R.string.disconnect) else getString(R.string.connect)
 
         val indicator = findViewById<View>(R.id.connectionIndicator)
-        val color = if (connected) {
-            ContextCompat.getColor(this, R.color.connected_color)
-        } else {
-            ContextCompat.getColor(this, R.color.disconnected_color)
-        }
+        handler.postDelayed({
+            val color = if (connected) {
+                ContextCompat.getColor(this, R.color.icolor) // Красный для подключенного
+            } else {
+                ContextCompat.getColor(this, android.R.color.darker_gray) // Серый для отключенного
+            }
 
-        val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
-        drawable?.setTint(color)
-        indicator.background = drawable
+            val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
+            drawable?.setTint(color)
+            indicator.background = drawable
+        }, 500) // Задержка 500 мс
     }
 
     private fun showMessage(message: String) {
