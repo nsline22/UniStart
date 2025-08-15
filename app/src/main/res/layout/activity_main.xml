@@ -189,7 +189,7 @@
 
             <Button
                 android:id="@+id/buttonL"
-                android:layout_width="160dp"
+                android:layout_width="268dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="4dp"
                 android:backgroundTint="?attr/colorPrimary"
@@ -200,10 +200,10 @@
 
             <Button
                 android:id="@+id/buttonU"
-                android:layout_width="160dp"
+                android:layout_width="55dp"
                 android:layout_height="60dp"
                 android:backgroundTint="?attr/colorPrimary"
-                android:text="Unlock"
+                android:text=""
                 android:textColor="@color/black"
                 app:cornerRadius="12dp"
                 android:drawableLeft="@drawable/un" />

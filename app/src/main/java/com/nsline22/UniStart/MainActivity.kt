@@ -249,7 +249,7 @@ class MainActivity : AppCompatActivity() {
         buttonF.setOnClickListener { sendCommand("F", clearOutput = true) }
         buttonA.setOnClickListener { sendCommand("A", clearOutput = true) }
         buttonL.setOnClickListener { sendCommand("L", clearOutput = true) }
-        buttonU.setOnClickListener { sendCommand("U", clearOutput = true) }
+        buttonU.setOnClickListener { sendCommand("9374", clearOutput = true) }
         buttonSend.setOnClickListener {
             val command = commandEditText.text.toString().trim()
             if (command.isNotEmpty()) {
