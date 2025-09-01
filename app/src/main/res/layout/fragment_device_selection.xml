@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Device"
+        android:textSize="20sp"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="32dp" />
+
+    <Spinner
+        android:id="@+id/deviceSpinner"
+        android:layout_width="300dp"
+        android:layout_height="35dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@drawable/spinner_popup_background"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose the Bluetooth device you want to connect to"
+        android:textSize="14sp"
+        android:textColor="@color/material_dynamic_primary60"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp" />
+</LinearLayout>
