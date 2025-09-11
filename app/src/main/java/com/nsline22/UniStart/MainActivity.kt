@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private var bluetoothSocket: BluetoothSocket? = null
     private var outputStream: OutputStream? = null
     private var inputStream: InputStream? = null
+    private var isOutputVisible = false
+    private var isCommandInputEnabled = false
 
     private val handler = Handler(Looper.getMainLooper())
     private var isConnected = false
@@ -142,16 +144,15 @@ class MainActivity : AppCompatActivity() {
         setupEditText()
         updateUIForConnectedState(false)
         requestBluetoothPermission()
+        setupSettingsButton()
+        setupOutputToggle()
+        loadSettings()
+        setupButtons()
+        setupCommandInputToggle()
 
         val deviceAddress = sharedPreferences.getString("selected_device", null)
         if (deviceAddress != null && !isConnected) {
             connectToDevice(deviceAddress)
-        }
-
-        binding.appIcon.setOnLongClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-            true
         }
     }
 
@@ -183,6 +184,66 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupSettingsButton() {
+        binding.settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupOutputToggle() {
+        binding.toggleOutputButton.setOnClickListener {
+            isOutputVisible = !isOutputVisible
+            updateOutputVisibility()
+        }
+    }
+
+    private fun setupCommandInputToggle() {
+        binding.toggleEditTextButton.setOnClickListener {
+            isCommandInputEnabled = !isCommandInputEnabled
+            updateCommandInputVisibility()
+        }
+    }
+
+    private fun updateOutputVisibility() {
+        if (isOutputVisible) {
+            binding.outputTextView.visibility = View.VISIBLE
+            binding.toggleOutputButton.setImageResource(R.drawable.ic_visibility_off)
+        } else {
+            binding.outputTextView.visibility = View.GONE
+            binding.toggleOutputButton.setImageResource(R.drawable.ic_visibility_off)
+        }
+    }
+
+    private fun loadSettings() {
+        // Загружаем настройки видимости поля ввода команд
+        isCommandInputEnabled = sharedPreferences.getBoolean("command_input_enabled", false)
+        updateCommandInputVisibility()
+    }
+
+    private fun updateCommandInputVisibility() {
+        if (isCommandInputEnabled) {
+            binding.commandInputLayout.visibility = View.VISIBLE
+        } else {
+            binding.commandInputLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showOutput() {
+        if (!isOutputVisible) {
+            isOutputVisible = true
+            updateOutputVisibility()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // При возвращении из настроек обновляем видимость
+        loadSettings()
+        applySavedTheme()
+    }
+
+
     private fun setupButtons() {
         binding.connectButton.setOnClickListener {
             if (isConnected) disconnectBluetooth() else {
@@ -195,11 +256,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.button1.setOnClickListener { sendCommand("1", clearOutput = true) }
-        binding.button2.setOnClickListener { sendCommand("2", clearOutput = true) }
-        binding.buttonF.setOnClickListener { sendCommand("F", clearOutput = true) }
-        binding.buttonA.setOnClickListener { sendCommand("A", clearOutput = true) }
-        binding.buttonL.setOnClickListener { sendCommand("L", clearOutput = true) }
+        binding.buttonF.setOnClickListener {
+            showOutput()
+            sendCommand("F", clearOutput = true)
+        }
+
+        binding.buttonA.setOnClickListener {
+            showOutput()
+            sendCommand("A", clearOutput = true)
+        }
+
         binding.buttonU.setOnClickListener { sendCommand(devicePinCode, clearOutput = true) }
         binding.buttonSend.setOnClickListener {
             val command = binding.commandEditText.text.toString().trim()
@@ -208,6 +274,29 @@ class MainActivity : AppCompatActivity() {
                 binding.commandEditText.text.clear()
             }
         }
+
+        binding.ignitionContainer.setOnClickListener {
+            sendCommand("1", clearOutput = true)
+            // Можно добавить визуальную обратную связь
+            it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }.start()
+        }
+
+        binding.starterContainer.setOnClickListener {
+            sendCommand("2", clearOutput = true)
+            it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }.start()
+        }
+
+        binding.ledContainer.setOnClickListener {
+            sendCommand("3", clearOutput = true)
+            it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
+            }.start()
+        }
+
     }
 
     private fun setupEditText() {

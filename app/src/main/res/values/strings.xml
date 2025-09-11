@@ -6,4 +6,7 @@
     <string name="enter_command"> Enter a command…</string>
     <string name="skip">SKIP</string>
     <string name="next">NEXT ></string>
+    <string name="settings_title">Настройки</string>
+    <string name="command_input_title">Поле ввода команд</string>
+    <string name="command_input_summary">Показывать поле для ручного ввода команд</string>
 </resources>
