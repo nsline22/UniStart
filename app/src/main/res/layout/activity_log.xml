@@ -18,18 +18,55 @@
         android:textColor="@color/black"
         app:cornerRadius="12dp" />
 
-    <!-- Окно вывода логов -->
-    <TextView
-        android:id="@+id/outputTextView"
+    <!-- Контейнер для окна вывода с кнопкой очистки -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/output_background"
-        android:padding="14dp"
-        android:textColor="@color/material_dynamic_primary60"
-        android:textSize="14sp"
-        android:scrollbars="vertical"
-        android:isScrollContainer="true" />
+        android:background="@drawable/output_background">
+
+        <!-- ScrollView с инерцией для логов -->
+        <ScrollView
+            android:id="@+id/logScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideOverlay">
+
+            <!-- TextView для логов внутри ScrollView -->
+            <TextView
+                android:id="@+id/outputTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:textColor="@color/material_dynamic_primary60"
+                android:textSize="14sp"
+                android:text=""
+                android:gravity="start|top"
+                android:singleLine="false"
+                android:maxLines="1000"
+                android:ellipsize="none"
+                android:fontFamily="monospace"
+                android:typeface="monospace" />
+
+        </ScrollView>
+
+        <!-- Кнопка очистки логов -->
+        <ImageButton
+            android:id="@+id/clearLogsButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/clear_logs_background"
+            android:contentDescription="Clear logs"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_clear" />
+
+    </RelativeLayout>
 
     <!-- Поле ввода команд -->
     <LinearLayout
@@ -47,6 +84,9 @@
             android:hint="Enter a command..."
             android:imeOptions="actionDone"
             android:inputType="text"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
             android:background="@drawable/edittext_background"
             android:textColor="?attr/colorPrimary"
             android:textColorHint="@color/edittexthint_color"

@@ -10,11 +10,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.*
-import android.text.method.ScrollingMovementMethod
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
@@ -34,11 +30,9 @@ class MainActivity : AppCompatActivity() {
     private var bluetoothSocket: BluetoothSocket? = null
     private var outputStream: OutputStream? = null
     private var inputStream: InputStream? = null
-    private var isOutputVisible = false
-    private var isCommandInputEnabled = false
+    private var isConnected = false
 
     private val handler = Handler(Looper.getMainLooper())
-    private var isConnected = false
     private val statusUpdateInterval = 30000L
     private val REQUEST_PERMISSION_CODE = 1001
 
@@ -46,37 +40,14 @@ class MainActivity : AppCompatActivity() {
     private val PREFS_NAME = "UniStartPrefs"
     private var devicePinCode = "9374"
 
-    private val receiveRunnable = Runnable {
-        val buffer = ByteArray(1024)
-        var bytes: Int
-
-        while (true) {
-            try {
-                bytes = inputStream?.read(buffer) ?: -1
-                if (bytes > 0) {
-                    val receivedData = String(buffer, 0, bytes)
-                    runOnUiThread {
-                        binding.outputTextView.append(receivedData)
-                        val scrollAmount = binding.outputTextView.layout.getLineTop(binding.outputTextView.lineCount) - binding.outputTextView.height
-                        if (scrollAmount > 0) {
-                            binding.outputTextView.scrollTo(0, scrollAmount)
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                runOnUiThread {
-                    showMessage("Data receive error: ${e.message}")
-                    disconnectBluetooth()
-                }
-                break
-            }
-        }
+    companion object {
+        var instance: MainActivity? = null
     }
 
     private val statusUpdateRunnable = object : Runnable {
         override fun run() {
             if (isConnected) {
-                sendCommand("S", clearOutput = true)
+                sendCommand("S")
             }
             handler.postDelayed(this, statusUpdateInterval)
         }
@@ -135,6 +106,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        instance = this
+
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         applySavedTheme()
         devicePinCode = sharedPreferences.getString("device_pin", "9374") ?: "9374"
@@ -144,11 +117,10 @@ class MainActivity : AppCompatActivity() {
         updateUIForConnectedState(false)
         requestBluetoothPermission()
         setupSettingsButton()
-        setupLogsButton() // Заменяем setupOutputToggle и setupCommandInputToggle
-        loadSettings()
+        setupLogsButton()
 
-        // Сразу создаем LogActivity в фоне, но не показываем
-        preloadLogActivity()
+        // Фоновая прогрузка LogActivity
+        preloadLogActivityInBackground()
 
         val deviceAddress = sharedPreferences.getString("selected_device", null)
         if (deviceAddress != null && !isConnected) {
@@ -156,18 +128,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Предзагрузка LogActivity
-    private fun preloadLogActivity() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, LogActivity::class.java)
-            startActivity(intent)
-            finish() // Закрываем сразу, чтобы пользователь не видел
-        }, 100)
-    }
-
     private fun applySavedTheme() {
         if (!::sharedPreferences.isInitialized) return
-        
+
         val theme = sharedPreferences.getInt("app_theme", 2)
         when (theme) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -177,7 +140,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        binding.outputTextView.movementMethod = ScrollingMovementMethod()
         val indicator = binding.connectionIndicator
         val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
         drawable?.setTint(ContextCompat.getColor(this, android.R.color.darker_gray))
@@ -200,36 +162,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Добавить эту функцию вместо setupOutputToggle и setupCommandInputToggle
     private fun setupLogsButton() {
         binding.logsButton.setOnClickListener {
             val intent = Intent(this, LogActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
     }
 
-
-    private fun loadSettings() {
-        // Загружаем настройки видимости поля ввода команд
-        isCommandInputEnabled = sharedPreferences.getBoolean("command_input_enabled", false)
-        updateCommandInputVisibility()
+    // Метод для очистки логов
+    fun clearLogs() {
+        val prefs = getSharedPreferences("UniStartPrefs", MODE_PRIVATE)
+        prefs.edit().putString("command_history", "").apply()
     }
 
-    private fun updateCommandInputVisibility() {
-        if (isCommandInputEnabled) {
-            binding.commandInputLayout.visibility = View.VISIBLE
-        } else {
-            binding.commandInputLayout.visibility = View.GONE
+    // Метод для открытия LogActivity с очисткой логов
+    fun openLogsWithClear() {
+        clearLogs()
+        val intent = Intent(this, LogActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
+    private fun preloadLogActivityInBackground() {
+        Handler(Looper.getMainLooper()).post {
+            val intent = Intent(this, LogActivity::class.java)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        // При возвращении из настроек обновляем видимость
-        loadSettings()
-        applySavedTheme()
-    }
-
 
     private fun setupButtons() {
         binding.connectButton.setOnClickListener {
@@ -244,65 +203,42 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonF.setOnClickListener {
-            sendCommand("F", clearOutput = true)
+            // Очищаем логи и открываем страницу логов
+            openLogsWithClear()
+            // Также отправляем команду "F" на ESP32
+            sendCommand("F")
         }
 
         binding.buttonA.setOnClickListener {
-            sendCommand("A", clearOutput = true)
+            // Очищаем логи и открываем страницу логов
+            openLogsWithClear()
+            // Также отправляем команду "A" на ESP32
+            sendCommand("A")
         }
 
-        binding.buttonU.setOnClickListener { sendCommand(devicePinCode, clearOutput = true) }
-        binding.buttonSend.setOnClickListener {
-            val command = binding.commandEditText.text.toString().trim()
-            if (command.isNotEmpty()) {
-                sendCommand(command, clearOutput = true)
-                binding.commandEditText.text.clear()
-            }
+        binding.buttonU.setOnClickListener {
+            sendCommand(devicePinCode)
         }
 
         binding.ignitionContainer.setOnClickListener {
-            sendCommand("1", clearOutput = true)
-            // Можно добавить визуальную обратную связь
+            sendCommand("1")
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             }.start()
         }
 
         binding.starterContainer.setOnClickListener {
-            sendCommand("2", clearOutput = true)
+            sendCommand("2")
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             }.start()
         }
 
         binding.ledContainer.setOnClickListener {
-            sendCommand("3", clearOutput = true)
+            sendCommand("3")
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             }.start()
-        }
-
-    }
-
-    private fun setupEditText() {
-        binding.commandEditText.setOnClickListener {
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(binding.commandEditText, InputMethodManager.SHOW_IMPLICIT)
-        }
-
-        binding.commandEditText.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                val command = binding.commandEditText.text.toString().trim()
-                if (command.isNotEmpty()) {
-                    sendCommand(command, clearOutput = true)
-                    binding.commandEditText.text.clear()
-                }
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.commandEditText.windowToken, 0)
-                true
-            } else {
-                false
-            }
         }
     }
 
@@ -340,7 +276,7 @@ class MainActivity : AppCompatActivity() {
                     updateUIForConnectedState(true)
                     stopBlinkingIndicator()
 
-                    Thread(receiveRunnable).start()
+                    startDataReceiving()
                     handler.postDelayed(statusUpdateRunnable, statusUpdateInterval)
                 }
             } catch (e: IOException) {
@@ -348,6 +284,44 @@ class MainActivity : AppCompatActivity() {
                     showMessage("Connection error: ${e.message}")
                     disconnectBluetooth()
                     stopBlinkingIndicator()
+                }
+            }
+        }.start()
+    }
+
+    private fun startDataReceiving() {
+        Thread {
+            val buffer = ByteArray(1024)
+            var bytes: Int
+
+            while (isConnected) {
+                try {
+                    bytes = inputStream?.read(buffer) ?: -1
+                    if (bytes > 0) {
+                        val receivedData = String(buffer, 0, bytes).trim()
+                        if (receivedData.isNotEmpty()) {
+                            runOnUiThread {
+                                addToCommandHistory(receivedData)
+                            }
+                        }
+                    }
+                } catch (e: IOException) {
+                    if (isConnected) {
+                        runOnUiThread {
+                            showMessage("Data receive error: ${e.message}")
+                            addToCommandHistory("Connection error: ${e.message}")
+                            disconnectBluetooth()
+                        }
+                    }
+                    break
+                } catch (e: Exception) {
+                    if (isConnected) {
+                        runOnUiThread {
+                            showMessage("Data receive error: ${e.message}")
+                            disconnectBluetooth()
+                        }
+                    }
+                    break
                 }
             }
         }.start()
@@ -377,13 +351,13 @@ class MainActivity : AppCompatActivity() {
     private fun disconnectBluetooth() {
         try {
             handler.removeCallbacks(statusUpdateRunnable)
+            isConnected = false
             bluetoothSocket?.close()
             outputStream?.close()
             inputStream?.close()
         } catch (e: IOException) {
             showMessage("Disconnect error: ${e.message}")
         } finally {
-            isConnected = false
             bluetoothSocket = null
             outputStream = null
             inputStream = null
@@ -397,29 +371,65 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendCommand(command: String, clearOutput: Boolean = true) {
+    private fun sendCommand(command: String) {
+        sendCommandToESP32(command)
+    }
+
+    // Публичный метод для вызова из LogActivity
+    fun sendCommandDirectly(command: String) {
+        runOnUiThread {
+            sendCommandToESP32(command)
+        }
+    }
+
+    private fun sendCommandToESP32(command: String) {
         if (!isConnected) {
-            showMessage("Not connected to device")
+            showMessage("Not connected to ESP32")
+            addToCommandHistory("> $command (not connected)")
             return
         }
 
-        if (clearOutput) {
-            runOnUiThread {
-                binding.outputTextView.text = ""
-            }
-        }
+        val cleanCommand = command.trim()
+
+        // ДОБАВЛЯЕМ КОМАНДУ В ЛОГИ ТОЛЬКО ЗДЕСЬ!
+        addToCommandHistory("> $cleanCommand")
 
         Thread {
             try {
-                outputStream?.write("$command\n".toByteArray())
+                val commandToSend = if (cleanCommand.endsWith("\n")) cleanCommand else "$cleanCommand\n"
+                outputStream?.write(commandToSend.toByteArray())
                 outputStream?.flush()
             } catch (e: IOException) {
                 runOnUiThread {
                     showMessage("Send error: ${e.message}")
+                    addToCommandHistory("Error: ${e.message}")
                     disconnectBluetooth()
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    showMessage("Unexpected error: ${e.message}")
                 }
             }
         }.start()
+    }
+
+    private fun addToCommandHistory(text: String) {
+        val prefs = getSharedPreferences("UniStartPrefs", MODE_PRIVATE)
+        val currentHistory = prefs.getString("command_history", "") ?: ""
+
+        val newHistory = if (currentHistory.isEmpty()) {
+            text
+        } else {
+            "$currentHistory\n$text"
+        }
+
+        val limitedHistory = if (newHistory.length > 5000) {
+            newHistory.lines().takeLast(100).joinToString("\n")
+        } else {
+            newHistory
+        }
+
+        prefs.edit().putString("command_history", limitedHistory).apply()
     }
 
     private fun updateUIForConnectedState(connected: Boolean) {
@@ -440,13 +450,18 @@ class MainActivity : AppCompatActivity() {
     private fun showMessage(message: String) {
         val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
         snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_bg))
-        val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.setTextColor(ContextCompat.getColor(this, R.color.snackbar_text))
+        snackbar.setTextColor(ContextCompat.getColor(this, R.color.snackbar_text))
         snackbar.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        applySavedTheme()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        instance = null
         disconnectBluetooth()
         handler.removeCallbacksAndMessages(null)
     }

@@ -1,447 +1,421 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_dark"
-    android:padding="16dp"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <!-- Верхний бар с иконками -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="40dp">
+        android:background="@color/background_dark"
+        android:padding="16dp">
 
-        <!-- Верхняя панель с иконкой настроек -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_settings" />
 
-            <ImageButton
-                android:id="@+id/settingsButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Settings"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_settings" />
+        <ImageButton
+            android:id="@+id/logsButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Open Logs"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_visibility_off" />
 
-            <!-- Одна кнопка для логов вместо двух -->
-            <ImageButton
-                android:id="@+id/logsButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Open Logs"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_visibility_off" />
+    </RelativeLayout>
 
-        </RelativeLayout>
+    <!-- Основной контент - центрированный по вертикали и горизонтали -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/app_icon"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:contentDescription="UniStart"
-            android:src="@mipmap/ic_launcher_foreground"
-            android:scaleType="fitCenter" />
-
-        <TextView
-            android:id="@+id/headerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="UniStart"
-            android:textColor="@color/material_dynamic_primary70"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/connectButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/link" />
-
-            <Button
-                android:id="@+id/buttonU"
-                android:layout_width="55dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="?attr/colorPrimary"
-                android:drawableLeft="@drawable/un"
-                android:text=""
-                android:textColor="@color/black"
-                app:cornerRadius="12dp"
-                android:layout_marginStart="3dp"/>
-
-            <View
-                android:id="@+id/connectionIndicator"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/connection_indicator" />
-
-        </LinearLayout>
-
-        <!-- Контейнер для времени и даты -->
-        <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/output_background"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--:--:--"
-                android:textColor="@color/material_dynamic_primary60"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/dateTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="----/--/--"
-                android:textColor="@color/material_dynamic_primary60"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-        <!-- Контейнеры для статусов в два столбца -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center_horizontal"
 
-            <!-- Первая строка статусов -->
+            android:padding="16dp">
+
+            <!-- Центрированный контент -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:orientation="vertical"
+                android:gravity="center_horizontal" >
 
-                <!-- Ignition Status (кликабельный) -->
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:contentDescription="UniStart"
+                    android:src="@mipmap/ic_launcher_foreground"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/headerText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="UniStart"
+                    android:textColor="@color/material_dynamic_primary70"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Панель подключения -->
                 <LinearLayout
-                    android:id="@+id/ignitionContainer"
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/output_background"
-                    android:padding="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/connectButton"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
-                        android:text="Ignition"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        android:text="@string/connect"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:textColor="@color/black"
+                        app:cornerRadius="12dp"
+                        android:drawableLeft="@drawable/link" />
 
-                    <TextView
-                        android:id="@+id/ignitionStatus"
-                        android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/buttonU"
+                        android:layout_width="55dp"
                         android:layout_height="wrap_content"
-                        android:text="OFF"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:drawableLeft="@drawable/un"
+                        android:text=""
+                        android:textColor="@color/black"
+                        app:cornerRadius="12dp"
+                        android:layout_marginStart="3dp"/>
+
+                    <View
+                        android:id="@+id/connectionIndicator"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/connection_indicator" />
 
                 </LinearLayout>
 
-                <!-- Starter Status (кликабельный) -->
+                <!-- Контейнер для времени и даты -->
                 <LinearLayout
-                    android:id="@+id/starterContainer"
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@drawable/output_background"
                     android:padding="12dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Starter"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/starterStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OFF"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Вторая строка статусов -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <!-- LED Status (кликабельный) -->
-                <LinearLayout
-                    android:id="@+id/ledContainer"
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/output_background"
-                    android:padding="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LED"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/ledStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OFF"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                </LinearLayout>
-
-                <!-- Voltage Status -->
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/output_background"
-                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/timeTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Voltage"
+                        android:text="--:--:--"
                         android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/voltageStatus"
+                        android:id="@+id/dateTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0.0V"
+                        android:text="----/--/--"
                         android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
+                        android:textSize="12sp"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
+
+                <!-- Контейнеры для статусов -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <!-- Первая строка статусов -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center">
+
+                        <!-- Ignition Status -->
+                        <LinearLayout
+                            android:id="@+id/ignitionContainer"
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ignition"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ignitionStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OFF"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Starter Status -->
+                        <LinearLayout
+                            android:id="@+id/starterContainer"
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Starter"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/starterStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OFF"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Вторая строка статусов -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center">
+
+                        <!-- LED Status -->
+                        <LinearLayout
+                            android:id="@+id/ledContainer"
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LED"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ledStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OFF"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Voltage Status -->
+                        <LinearLayout
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Voltage"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/voltageStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.0V"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Третья строка статусов -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <!-- Engine Temp Status -->
+                        <LinearLayout
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Engine Temp"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/engineTempStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.0°C"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Street Temp Status -->
+                        <LinearLayout
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/output_background"
+                            android:padding="12dp"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Street Temp"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/streetTempStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.0°C"
+                                android:textColor="@color/material_dynamic_primary60"
+                                android:textSize="14sp"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Кнопки команд -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="1dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/buttonF"
+                        android:layout_width="160dp"
+                        android:layout_height="60dp"
+                        android:layout_marginEnd="4dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:text="List cards"
+                        android:textColor="@color/black"
+                        app:cornerRadius="12dp"
+                        android:drawableLeft="@drawable/ls" />
+
+                    <Button
+                        android:id="@+id/buttonA"
+                        android:layout_width="160dp"
+                        android:layout_height="60dp"
+                        android:layout_marginEnd="4dp"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:text="Add card"
+                        android:textColor="@color/black"
+                        app:cornerRadius="12dp"
+                        android:drawableLeft="@drawable/add" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/signlink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="t.me/nsline22"
+                    android:autoLink="web"
+                    android:linksClickable="true"
+                    android:textColorLink="@color/material_dynamic_primary50"
+                    android:textSize="10sp"
+                    android:padding="15dp" />
 
             </LinearLayout>
 
-            <!-- Третья строка статусов -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Engine Temp Status -->
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/output_background"
-                    android:padding="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Engine Temp"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/engineTempStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.0°C"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                </LinearLayout>
-
-                <!-- Street Temp Status -->
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="80dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/output_background"
-                    android:padding="12dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Street Temp"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/streetTempStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.0°C"
-                        android:textColor="@color/material_dynamic_primary60"
-                        android:textSize="14sp"
-                        android:layout_marginTop="4dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/outputTextView"
-                android:layout_width="309dp"
-                android:layout_height="100dp"
-                android:background="@drawable/output_background"
-                android:padding="14dp"
-                android:textColor="@color/material_dynamic_primary60"
-                android:textSize="14sp"
-                android:scrollbars="vertical"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"/>
-
         </LinearLayout>
 
-        <!-- Поле для ввода команд с кнопкой отправки -->
-        <LinearLayout
-            android:id="@+id/commandInputLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="16dp"
-            android:visibility="gone">
+    </ScrollView>
 
-            <EditText
-                android:id="@+id/commandEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Enter a command..."
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:clickable="true"
-                android:background="@drawable/edittext_background"
-                android:textColor="?attr/colorPrimary"
-                android:textColorHint="@color/edittexthint_color"
-                android:padding="12dp"
-                android:layout_marginEnd="4dp" />
-
-            <Button
-                android:id="@+id/buttonSend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/black"
-                android:padding="12dp"
-                app:cornerRadius="12dp"
-                android:drawableRight="@drawable/send"/>
-        </LinearLayout>
-
-        <!-- Кнопки команд (только F и A остались) -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="1dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonF"
-                android:layout_width="160dp"
-                android:layout_height="60dp"
-                android:layout_marginEnd="4dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:text="List cards"
-                android:textColor="@color/black"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/ls" />
-
-            <Button
-                android:id="@+id/buttonA"
-                android:layout_width="160dp"
-                android:layout_height="60dp"
-                android:layout_marginEnd="4dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:text="Add card"
-                android:textColor="@color/black"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/add" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/signlink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="t.me/nsline22"
-            android:autoLink="web"
-            android:linksClickable="true"
-            android:textColorLink="@color/material_dynamic_primary50"
-            android:textSize="10sp"
-            android:padding="15dp" />
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>
