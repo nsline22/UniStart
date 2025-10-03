@@ -141,19 +141,28 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupButtons()
-        setupEditText()
         updateUIForConnectedState(false)
         requestBluetoothPermission()
         setupSettingsButton()
-        setupOutputToggle()
+        setupLogsButton() // Заменяем setupOutputToggle и setupCommandInputToggle
         loadSettings()
-        setupButtons()
-        setupCommandInputToggle()
+
+        // Сразу создаем LogActivity в фоне, но не показываем
+        preloadLogActivity()
 
         val deviceAddress = sharedPreferences.getString("selected_device", null)
         if (deviceAddress != null && !isConnected) {
             connectToDevice(deviceAddress)
         }
+    }
+
+    // Предзагрузка LogActivity
+    private fun preloadLogActivity() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, LogActivity::class.java)
+            startActivity(intent)
+            finish() // Закрываем сразу, чтобы пользователь не видел
+        }, 100)
     }
 
     private fun applySavedTheme() {
@@ -191,29 +200,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupOutputToggle() {
-        binding.toggleOutputButton.setOnClickListener {
-            isOutputVisible = !isOutputVisible
-            updateOutputVisibility()
+    // Добавить эту функцию вместо setupOutputToggle и setupCommandInputToggle
+    private fun setupLogsButton() {
+        binding.logsButton.setOnClickListener {
+            val intent = Intent(this, LogActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    private fun setupCommandInputToggle() {
-        binding.toggleEditTextButton.setOnClickListener {
-            isCommandInputEnabled = !isCommandInputEnabled
-            updateCommandInputVisibility()
-        }
-    }
-
-    private fun updateOutputVisibility() {
-        if (isOutputVisible) {
-            binding.outputTextView.visibility = View.VISIBLE
-            binding.toggleOutputButton.setImageResource(R.drawable.ic_visibility_off)
-        } else {
-            binding.outputTextView.visibility = View.GONE
-            binding.toggleOutputButton.setImageResource(R.drawable.ic_visibility_off)
-        }
-    }
 
     private fun loadSettings() {
         // Загружаем настройки видимости поля ввода команд
@@ -226,13 +220,6 @@ class MainActivity : AppCompatActivity() {
             binding.commandInputLayout.visibility = View.VISIBLE
         } else {
             binding.commandInputLayout.visibility = View.GONE
-        }
-    }
-
-    private fun showOutput() {
-        if (!isOutputVisible) {
-            isOutputVisible = true
-            updateOutputVisibility()
         }
     }
 
@@ -257,12 +244,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonF.setOnClickListener {
-            showOutput()
             sendCommand("F", clearOutput = true)
         }
 
         binding.buttonA.setOnClickListener {
-            showOutput()
             sendCommand("A", clearOutput = true)
         }
 

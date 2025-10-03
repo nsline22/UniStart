@@ -42,5 +42,10 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Nsline22" />
+
+        <activity
+            android:name=".LogActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nsline22" />
     </application>
 </manifest>
