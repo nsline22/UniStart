@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private val PREFS_NAME = "UniStartPrefs"
-    private var devicePinCode = "9374"
+    private var devicePinCode = "0000"
 
     companion object {
         var instance: MainActivity? = null
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         applySavedTheme()
-        devicePinCode = sharedPreferences.getString("device_pin", "9374") ?: "9374"
+        devicePinCode = sharedPreferences.getString("device_pin", "0000") ?: "0000"
 
         initViews()
         setupButtons()
@@ -118,14 +118,15 @@ class MainActivity : AppCompatActivity() {
         requestBluetoothPermission()
         setupSettingsButton()
         setupLogsButton()
+        clearLogs()
 
         // Фоновая прогрузка LogActivity
         preloadLogActivityInBackground()
 
-        val deviceAddress = sharedPreferences.getString("selected_device", null)
-        if (deviceAddress != null && !isConnected) {
-            connectToDevice(deviceAddress)
-        }
+       // val deviceAddress = sharedPreferences.getString("selected_device", null)
+       // if (deviceAddress != null && !isConnected) {
+           // connectToDevice(deviceAddress)
+       // }
     }
 
     private fun applySavedTheme() {
@@ -142,7 +143,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         val indicator = binding.connectionIndicator
         val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
-        drawable?.setTint(ContextCompat.getColor(this, android.R.color.darker_gray))
+        drawable?.setTint(ContextCompat.getColor(this, android.R.color.holo_red_dark))
         indicator.background = drawable
     }
 
@@ -159,6 +160,7 @@ class MainActivity : AppCompatActivity() {
         binding.settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
@@ -166,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         binding.logsButton.setOnClickListener {
             val intent = Intent(this, LogActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -181,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         clearLogs()
         val intent = Intent(this, LogActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun preloadLogActivityInBackground() {
@@ -203,14 +205,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonF.setOnClickListener {
-            // Очищаем логи и открываем страницу логов
+            // Очищаем логи и открываем страницу логов с анимацией слева
             openLogsWithClear()
             // Также отправляем команду "F" на ESP32
             sendCommand("F")
         }
 
         binding.buttonA.setOnClickListener {
-            // Очищаем логи и открываем страницу логов
+            // Очищаем логи и открываем страницу логов с анимацией слева
             openLogsWithClear()
             // Также отправляем команду "A" на ESP32
             sendCommand("A")
@@ -343,7 +345,7 @@ class MainActivity : AppCompatActivity() {
             val indicator = binding.connectionIndicator
             indicator.clearAnimation()
             val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
-            drawable?.setTint(ContextCompat.getColor(this, android.R.color.darker_gray))
+            drawable?.setTint(ContextCompat.getColor(this, android.R.color.holo_red_dark))
             indicator.background = drawable
         }
     }
@@ -437,9 +439,9 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed({
             val indicator = binding.connectionIndicator
             val color = if (connected) {
-                ContextCompat.getColor(this, R.color.icolor)
+                ContextCompat.getColor(this, android.R.color.holo_green_dark)
             } else {
-                ContextCompat.getColor(this, android.R.color.darker_gray)
+                ContextCompat.getColor(this, android.R.color.holo_red_dark)
             }
             val drawable = ContextCompat.getDrawable(this, R.drawable.connection_indicator)?.mutate()
             drawable?.setTint(color)

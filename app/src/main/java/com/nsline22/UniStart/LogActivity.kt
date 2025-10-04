@@ -17,6 +17,9 @@ class LogActivity : AppCompatActivity() {
         binding = ActivityLogBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Анимация входа слева
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+
         setupViews()
         setupBackButton()
         setupClearButton()
@@ -176,14 +179,14 @@ class LogActivity : AppCompatActivity() {
         binding.backButton.setOnClickListener {
             hideKeyboard()
             finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
     override fun onBackPressed() {
         hideKeyboard()
         super.onBackPressed()
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     override fun onPause() {

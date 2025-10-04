@@ -4,62 +4,159 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_dark"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Кнопка Back (остается вверху) -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-        <Button
-            android:id="@+id/resetAppButton"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="Restart UI"
-            android:textColor="@color/black"
-            android:backgroundTint="?attr/colorPrimary"
-            android:layout_marginBottom="32dp"
-            app:cornerRadius="12dp" />
+            <Button
+                android:id="@+id/aboutBackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:drawableLeft="@drawable/ic_arrow_backward"
+                android:textColor="?attr/colorPrimary"
+                style="@style/Widget.AppCompat.Button.Borderless" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="About"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="UniStart v3.0"
-            android:textColor="@color/material_dynamic_primary60"
-            android:layout_marginBottom="8dp" />
+        <!-- Основной контент, который будет центрироваться -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Developed by nsline22"
-            android:textColor="@color/material_dynamic_primary60"
-            android:layout_marginBottom="32dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="32dp" />
 
-        <Button
-            android:id="@+id/aboutBackButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:textColor="?attr/colorPrimary"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            <!-- Контейнер устройства (кликабельный) -->
+            <LinearLayout
+                android:id="@+id/deviceInfoContainer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Device"
+                    android:textColor="@color/material_dynamic_primary60"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/deviceInfoText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No device selected"
+                    android:textColor="@color/material_dynamic_primary60"
+                    android:textSize="14sp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+            <!-- Контейнер PIN-кода (кликабельный) -->
+            <LinearLayout
+                android:id="@+id/pinInfoContainer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PIN Code"
+                    android:textColor="@color/material_dynamic_primary60"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/pinInfoText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="••••"
+                    android:textColor="@color/material_dynamic_primary60"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="clickable"
+                    android:textColor="@color/material_dynamic_primary60"
+                    android:textSize="10sp"
+                    android:textStyle="bold|italic"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+
+            <!-- Кнопка сброса до заводских настроек -->
+            <Button
+                android:id="@+id/factoryResetButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Reset settings"
+                android:textColor="@color/black"
+                android:backgroundTint="?attr/colorPrimary"
+                android:layout_marginBottom="16dp"
+                app:cornerRadius="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UniStart v4.0"
+                android:textColor="@color/material_dynamic_primary60"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Developed by nsline22"
+                android:textColor="@color/material_dynamic_primary60"
+                android:layout_marginBottom="32dp" />
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

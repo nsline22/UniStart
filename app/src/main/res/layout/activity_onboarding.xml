@@ -6,21 +6,22 @@
     android:background="@color/background_dark"
     android:padding="24dp">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <!-- Заменяем TabLayout на LinearLayout с кружками -->
+    <LinearLayout
+        android:id="@+id/dotsContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
-        app:tabBackground="@color/background_dark"
-        app:tabIndicatorGravity="top"/>
+        android:orientation="horizontal"
+        android:gravity="center" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@+id/buttonContainer"
-        android:layout_below="@+id/tabLayout"
+        android:layout_below="@+id/dotsContainer"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp" />
 
@@ -32,6 +33,15 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
+            android:textColor="?attr/colorPrimary"
+            android:drawableLeft="@drawable/ic_arrow_backward"
+            style="@style/Widget.AppCompat.Button.Borderless" />
+
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,7 +51,8 @@
             android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NEXT >"
+            android:text="NEXT"
+            android:drawableRight="@drawable/ic_arrow_forward"
             android:textColor="?attr/colorPrimary"
             style="@style/Widget.AppCompat.Button.Borderless" />
     </LinearLayout>

@@ -7,8 +7,9 @@
     <color name="background_dark">@color/material_dynamic_neutral_variant10</color>
     <color name="snackbar_bg">@color/material_dynamic_neutral_variant20</color>
     <color name="snackbar_text">@color/material_dynamic_primary80</color>
-    <color name="connected_color">?attr/colorPrimary</color>
-    <color name="disconnected_color">@android:color/darker_gray</color>
+    <color name="connected_color">@android:color/holo_green_dark</color>
+    <color name="disconnected_color">@android:color/holo_red_dark</color>
     <color name="edittexthint_color">@color/material_dynamic_primary50</color>
     <color name="icolor">@color/material_dynamic_tertiary60</color>
+    <color name="dot_inactive">#666666</color>
 </resources>

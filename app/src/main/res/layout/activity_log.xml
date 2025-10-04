@@ -8,15 +8,16 @@
     android:padding="16dp">
 
     <!-- Кнопка назад -->
+
     <Button
         android:id="@+id/backButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Back to Main"
-        android:backgroundTint="?attr/colorPrimary"
-        android:textColor="@color/black"
-        app:cornerRadius="12dp" />
+        android:text="Back"
+        android:textColor="?attr/colorPrimary"
+        android:drawableLeft="@drawable/ic_arrow_backward" />
 
     <!-- Контейнер для окна вывода с кнопкой очистки -->
     <RelativeLayout
@@ -101,7 +102,8 @@
             android:backgroundTint="?attr/colorPrimary"
             android:textColor="@color/black"
             android:padding="12dp"
-            app:cornerRadius="12dp" />
+            app:cornerRadius="12dp"
+            android:drawableRight="@drawable/send" />
 
     </LinearLayout>
 
