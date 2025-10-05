@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.ledContainer.setOnClickListener {
-            sendCommand("3")
+            sendCommand("L")
             it.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).setDuration(100).start()
             }.start()
