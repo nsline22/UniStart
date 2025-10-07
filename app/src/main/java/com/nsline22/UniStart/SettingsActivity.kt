@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.nsline22.UniStart.databinding.ActivitySettingsBinding
@@ -33,11 +35,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupCurrentSettings() {
-        // Получаем сохраненные настройки
         val deviceAddress = sharedPreferences.getString("selected_device", null)
         val pinCode = sharedPreferences.getString("device_pin", "0000") ?: "0000"
 
-        // Отображаем информацию об устройстве
         val deviceInfo = if (deviceAddress != null) {
             getDeviceInfo(deviceAddress)
         } else {
@@ -45,11 +45,8 @@ class SettingsActivity : AppCompatActivity() {
         }
         binding.deviceInfoText.text = deviceInfo
 
-        // Отображаем PIN-код (маскируем для безопасности)
-        val maskedPin = "••••" // Полностью маскируем
+        val maskedPin = "••••"
         binding.pinInfoText.text = maskedPin
-
-        // Сохраняем полный PIN для отображения при нажатии
         binding.pinInfoText.tag = pinCode
     }
 
@@ -75,14 +72,30 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun formatDeviceAddress(address: String): String {
         return try {
-            // Форматируем MAC-адрес в читаемый вид: XX:XX:XX:XX:XX:XX
             address.replace(":", "").chunked(2).joinToString(":")
         } catch (e: Exception) {
-            address // Возвращаем как есть в случае ошибки
+            address
         }
     }
 
     private fun setupListeners() {
+        binding.syncTimeButton.setOnClickListener {
+            syncTime()
+        }
+
+        binding.changePinButton.setOnClickListener {
+            showChangePinDialog()
+        }
+
+        binding.listCardsButton.setOnClickListener {
+            MainActivity.instance?.openLogsWithClear()
+            MainActivity.instance?.sendCommandDirectly("F")
+        }
+
+        binding.addCardButton.setOnClickListener {
+            MainActivity.instance?.openLogsWithClear()
+            MainActivity.instance?.sendCommandDirectly("A")
+        }
 
         binding.factoryResetButton.setOnClickListener {
             showFactoryResetConfirmation()
@@ -92,14 +105,89 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        // Клик по контейнеру устройства - показываем детали
         binding.deviceInfoContainer.setOnClickListener {
             showDeviceDetails()
         }
 
-        // Клик по контейнеру PIN - показываем полный PIN
         binding.pinInfoContainer.setOnClickListener {
             togglePinVisibility()
+        }
+    }
+
+    private fun showChangePinDialog() {
+        val builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Change PIN Code")
+
+        val input = EditText(this)
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+        input.hint = "Enter new 4-digit PIN"
+        input.maxLines = 1
+
+        val container = android.widget.FrameLayout(this)
+        val params = android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+        params.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+        input.layoutParams = params
+        container.addView(input)
+
+        builder.setView(container)
+
+        builder.setPositiveButton("Save") { dialog, _ ->
+            val newPin = input.text.toString().trim()
+            if (newPin.length == 4 && newPin.all { it.isDigit() }) {
+                sharedPreferences.edit().putString("device_pin", newPin).apply()
+                binding.pinInfoText.tag = newPin
+                binding.pinInfoText.text = "••••"
+
+                android.widget.Toast.makeText(
+                    this,
+                    "PIN changed successfully",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+
+                // Обновляем PIN в MainActivity
+                MainActivity.instance?.onResume()
+            } else {
+                android.widget.Toast.makeText(
+                    this,
+                    "PIN must be exactly 4 digits",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
+
+        // Показываем клавиатуру
+        input.requestFocus()
+        handler.postDelayed({
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.showSoftInput(input, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+        }, 200)
+    }
+
+    private fun syncTime() {
+        MainActivity.instance?.let { mainActivity ->
+            mainActivity.syncTimeWithESP32()
+            android.widget.Toast.makeText(
+                this,
+                "Synchronizing time with ESP32...",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        } ?: run {
+            android.widget.Toast.makeText(
+                this,
+                "MainActivity not available. Please return to main screen.",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -118,7 +206,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun performFactoryReset() {
-        // Очищаем только настройки устройства и PIN, оставляя другие настройки
         sharedPreferences.edit().apply {
             remove("selected_device")
             remove("device_pin")
@@ -126,7 +213,6 @@ class SettingsActivity : AppCompatActivity() {
             apply()
         }
 
-        // Переходим на онбординг
         val intent = Intent(this, OnboardingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
@@ -169,22 +255,18 @@ class SettingsActivity : AppCompatActivity() {
         val fullPin = binding.pinInfoText.tag as? String ?: "0000"
 
         if (currentText == "••••") {
-            // Показываем полный PIN
             binding.pinInfoText.text = fullPin
             isPinVisible = true
 
-            // Через 3 секунды скрываем обратно
             handler.postDelayed({
                 binding.pinInfoText.text = "••••"
                 isPinVisible = false
                 isPinClickEnabled = true
             }, 3000)
         } else {
-            // Скрываем PIN
             binding.pinInfoText.text = "••••"
             isPinVisible = false
 
-            // Включаем клик через 500мс
             handler.postDelayed({
                 isPinClickEnabled = true
             }, 500)
@@ -199,23 +281,13 @@ class SettingsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun resetApp() {
-        sharedPreferences.edit().clear().apply()
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        finish()
-    }
-
     override fun onResume() {
         super.onResume()
-        // Обновляем настройки при возвращении на экран
         setupCurrentSettings()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Очищаем handler чтобы избежать утечек памяти
         handler.removeCallbacksAndMessages(null)
     }
 }

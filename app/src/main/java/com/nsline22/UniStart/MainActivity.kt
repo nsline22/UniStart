@@ -20,6 +20,7 @@ import com.nsline22.UniStart.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -33,12 +34,18 @@ class MainActivity : AppCompatActivity() {
     private var isConnected = false
 
     private val handler = Handler(Looper.getMainLooper())
-    private val statusUpdateInterval = 30000L
+    private val statusUpdateInterval = 1000L
+    private val timeSyncInterval = 600000L
     private val REQUEST_PERMISSION_CODE = 1001
 
     private lateinit var sharedPreferences: SharedPreferences
     private val PREFS_NAME = "UniStartPrefs"
     private var devicePinCode = "0000"
+
+    private var esp32Time = "--:--:--"
+    private var esp32Date = "----/--/--"
+
+    private val dataBuffer = StringBuilder()
 
     companion object {
         var instance: MainActivity? = null
@@ -47,9 +54,18 @@ class MainActivity : AppCompatActivity() {
     private val statusUpdateRunnable = object : Runnable {
         override fun run() {
             if (isConnected) {
-                sendCommand("S")
+                sendCommandSilent("S")
             }
             handler.postDelayed(this, statusUpdateInterval)
+        }
+    }
+
+    private val timeSyncRunnable = object : Runnable {
+        override fun run() {
+            if (isConnected) {
+                syncTimeWithESP32Silent()
+            }
+            handler.postDelayed(this, timeSyncInterval)
         }
     }
 
@@ -59,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             val isGranted = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
             if (!isGranted) {
-                val shouldShowRationale = ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
                 ActivityCompat.requestPermissions(this, arrayOf(permission), REQUEST_PERMISSION_CODE)
             } else {
                 setupBluetooth()
@@ -120,13 +135,7 @@ class MainActivity : AppCompatActivity() {
         setupLogsButton()
         clearLogs()
 
-        // Фоновая прогрузка LogActivity
         preloadLogActivityInBackground()
-
-       // val deviceAddress = sharedPreferences.getString("selected_device", null)
-       // if (deviceAddress != null && !isConnected) {
-           // connectToDevice(deviceAddress)
-       // }
     }
 
     private fun applySavedTheme() {
@@ -172,13 +181,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Метод для очистки логов
     fun clearLogs() {
         val prefs = getSharedPreferences("UniStartPrefs", MODE_PRIVATE)
         prefs.edit().putString("command_history", "").apply()
     }
 
-    // Метод для открытия LogActivity с очисткой логов
     fun openLogsWithClear() {
         clearLogs()
         val intent = Intent(this, LogActivity::class.java)
@@ -204,22 +211,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.buttonF.setOnClickListener {
-            // Очищаем логи и открываем страницу логов с анимацией слева
-            openLogsWithClear()
-            // Также отправляем команду "F" на ESP32
-            sendCommand("F")
-        }
-
-        binding.buttonA.setOnClickListener {
-            // Очищаем логи и открываем страницу логов с анимацией слева
-            openLogsWithClear()
-            // Также отправляем команду "A" на ESP32
-            sendCommand("A")
-        }
-
         binding.buttonU.setOnClickListener {
             sendCommand(devicePinCode)
+            addToCommandHistory("> Unlock command sent")
         }
 
         binding.ignitionContainer.setOnClickListener {
@@ -280,6 +274,12 @@ class MainActivity : AppCompatActivity() {
 
                     startDataReceiving()
                     handler.postDelayed(statusUpdateRunnable, statusUpdateInterval)
+
+                    handler.postDelayed({
+                        syncTimeWithESP32()
+                    }, 2000)
+
+                    handler.postDelayed(timeSyncRunnable, timeSyncInterval)
                 }
             } catch (e: IOException) {
                 runOnUiThread {
@@ -300,18 +300,27 @@ class MainActivity : AppCompatActivity() {
                 try {
                     bytes = inputStream?.read(buffer) ?: -1
                     if (bytes > 0) {
-                        val receivedData = String(buffer, 0, bytes).trim()
-                        if (receivedData.isNotEmpty()) {
-                            runOnUiThread {
-                                addToCommandHistory(receivedData)
+                        val receivedData = String(buffer, 0, bytes)
+                        dataBuffer.append(receivedData)
+
+                        var newlineIndex = dataBuffer.indexOf("\n")
+                        while (newlineIndex != -1) {
+                            val line = dataBuffer.substring(0, newlineIndex).trim()
+                            dataBuffer.delete(0, newlineIndex + 1)
+
+                            if (line.isNotEmpty()) {
+                                runOnUiThread {
+                                    processReceivedLine(line)
+                                }
                             }
+
+                            newlineIndex = dataBuffer.indexOf("\n")
                         }
                     }
                 } catch (e: IOException) {
                     if (isConnected) {
                         runOnUiThread {
                             showMessage("Data receive error: ${e.message}")
-                            addToCommandHistory("Connection error: ${e.message}")
                             disconnectBluetooth()
                         }
                     }
@@ -327,6 +336,89 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun processReceivedLine(line: String) {
+        when {
+            line.startsWith("I-") -> {
+                val status = if (line.contains("1")) "ON" else "OFF"
+                binding.ignitionStatus.text = status
+            }
+            line.startsWith("S-") -> {
+                val status = if (line.contains("1")) "ON" else "OFF"
+                binding.starterStatus.text = status
+            }
+            line.startsWith("L-") -> {
+                val status = if (line.contains("1")) "ON" else "OFF"
+                binding.ledStatus.text = status
+            }
+            line.startsWith("T-") -> {
+                val timeData = line.substring(2).trim()
+                if (timeData.length >= 19) {
+                    val datePart = timeData.substring(0, 10)
+                    val timePart = timeData.substring(11, 19)
+
+                    val dateComponents = datePart.split("-")
+                    if (dateComponents.size == 3) {
+                        esp32Date = "${dateComponents[2]}/${dateComponents[1]}"
+                    }
+
+                    esp32Time = timePart
+
+                    binding.timeTextView.text = esp32Time
+                    binding.dateTextView.text = esp32Date
+                }
+            }
+            line.startsWith("V-") -> {
+                val voltage = line.substring(2).trim()
+                binding.voltageStatus.text = "${voltage}V"
+            }
+            line.startsWith("ETEMP-") -> {
+                val temp = line.substring(6).trim()
+                binding.engineTempStatus.text = "${temp}°C"
+            }
+            line.startsWith("STEMP-") -> {
+                val temp = line.substring(6).trim()
+                binding.streetTempStatus.text = "${temp}°C"
+            }
+            else -> {
+                // Это ответ на команду пользователя - добавляем в логи
+                if (line.isNotEmpty() && !line.startsWith("I-") && !line.startsWith("S-") &&
+                    !line.startsWith("L-") && !line.startsWith("T-") && !line.startsWith("V-") &&
+                    !line.startsWith("ETEMP-") && !line.startsWith("STEMP-")) {
+                    addToCommandHistory(line)
+                }
+            }
+        }
+    }
+
+    fun syncTimeWithESP32() {
+        if (!isConnected) {
+            showMessage("Not connected to ESP32")
+            return
+        }
+
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val currentTime = dateFormat.format(calendar.time)
+
+        val syncCommand = "D:$currentTime"
+
+        sendCommandSilent(syncCommand)
+
+        addToCommandHistory("Time synced: $currentTime")
+        showMessage("Time synchronized")
+    }
+
+    private fun syncTimeWithESP32Silent() {
+        if (!isConnected) return
+
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val currentTime = dateFormat.format(calendar.time)
+
+        val syncCommand = "D:$currentTime"
+        sendCommandSilent(syncCommand)
     }
 
     private fun startBlinkingIndicator() {
@@ -353,6 +445,7 @@ class MainActivity : AppCompatActivity() {
     private fun disconnectBluetooth() {
         try {
             handler.removeCallbacks(statusUpdateRunnable)
+            handler.removeCallbacks(timeSyncRunnable)
             isConnected = false
             bluetoothSocket?.close()
             outputStream?.close()
@@ -374,27 +467,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendCommand(command: String) {
-        sendCommandToESP32(command)
+        sendCommandToESP32(command, shouldLog = true)
     }
 
-    // Публичный метод для вызова из LogActivity
+    private fun sendCommandSilent(command: String) {
+        sendCommandToESP32(command, shouldLog = false)
+    }
+
     fun sendCommandDirectly(command: String) {
         runOnUiThread {
-            sendCommandToESP32(command)
+            sendCommandToESP32(command, shouldLog = true)
         }
     }
 
-    private fun sendCommandToESP32(command: String) {
+    private fun sendCommandToESP32(command: String, shouldLog: Boolean) {
         if (!isConnected) {
             showMessage("Not connected to ESP32")
-            addToCommandHistory("> $command (not connected)")
+            if (shouldLog) {
+                addToCommandHistory("> $command (not connected)")
+            }
             return
         }
 
         val cleanCommand = command.trim()
 
-        // ДОБАВЛЯЕМ КОМАНДУ В ЛОГИ ТОЛЬКО ЗДЕСЬ!
-        addToCommandHistory("> $cleanCommand")
+        if (shouldLog) {
+            addToCommandHistory("> $cleanCommand")
+        }
 
         Thread {
             try {
@@ -456,9 +555,10 @@ class MainActivity : AppCompatActivity() {
         snackbar.show()
     }
 
-    override fun onResume() {
+    public override fun onResume() {
         super.onResume()
         applySavedTheme()
+        devicePinCode = sharedPreferences.getString("device_pin", "0000") ?: "0000"
     }
 
     override fun onDestroy() {

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Кнопка Back (остается вверху) -->
+        <!-- Кнопка Back -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
 
         </LinearLayout>
 
-        <!-- Основной контент, который будет центрироваться -->
+        <!-- Основной контент -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -48,7 +48,7 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="32dp" />
 
-            <!-- Контейнер устройства (кликабельный) -->
+            <!-- Контейнер устройства -->
             <LinearLayout
                 android:id="@+id/deviceInfoContainer"
                 android:layout_width="300dp"
@@ -82,7 +82,7 @@
 
             </LinearLayout>
 
-            <!-- Контейнер PIN-кода (кликабельный) -->
+            <!-- Контейнер PIN-кода -->
             <LinearLayout
                 android:id="@+id/pinInfoContainer"
                 android:layout_width="300dp"
@@ -90,7 +90,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/output_background"
                 android:padding="16dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:clickable="true"
                 android:focusable="true"
@@ -124,7 +124,69 @@
 
             </LinearLayout>
 
-            <!-- Кнопка сброса до заводских настроек -->
+            <!-- Кнопка смены PIN -->
+            <Button
+                android:id="@+id/changePinButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Change PIN"
+                android:textColor="@color/black"
+                android:backgroundTint="?attr/colorPrimary"
+                android:layout_marginBottom="8dp"
+                app:cornerRadius="12dp" />
+
+            <!-- Кнопка синхронизации времени -->
+            <Button
+                android:id="@+id/syncTimeButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Sync Time"
+                android:textColor="@color/black"
+                android:backgroundTint="?attr/colorPrimary"
+                android:layout_marginBottom="24dp"
+                app:cornerRadius="12dp" />
+
+            <!-- Секция управления картами -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RFID Cards"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Кнопки управления картами -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <Button
+                    android:id="@+id/listCardsButton"
+                    android:layout_width="160dp"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="List cards"
+                    android:textColor="@color/black"
+                    app:cornerRadius="12dp"
+                    android:drawableLeft="@drawable/ls" />
+
+                <Button
+                    android:id="@+id/addCardButton"
+                    android:layout_width="160dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="Add card"
+                    android:textColor="@color/black"
+                    app:cornerRadius="12dp"
+                    android:drawableLeft="@drawable/add" />
+
+            </LinearLayout>
+
+            <!-- Кнопка сброса -->
             <Button
                 android:id="@+id/factoryResetButton"
                 android:layout_width="200dp"

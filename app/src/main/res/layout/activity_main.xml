@@ -39,21 +39,19 @@
 
     </RelativeLayout>
 
-    <!-- Основной контент - центрированный по вертикали -->
+    <!-- Основной контент -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true">
 
-        <!-- Этот контейнер заполняет всю высоту и центрирует контент -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center">
 
-            <!-- Центрированный контент -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -368,43 +366,11 @@
 
                 </LinearLayout>
 
-                <!-- Кнопки команд -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="1dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <Button
-                        android:id="@+id/buttonF"
-                        android:layout_width="160dp"
-                        android:layout_height="60dp"
-                        android:layout_marginEnd="4dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:text="List cards"
-                        android:textColor="@color/black"
-                        app:cornerRadius="12dp"
-                        android:drawableLeft="@drawable/ls" />
-
-                    <Button
-                        android:id="@+id/buttonA"
-                        android:layout_width="160dp"
-                        android:layout_height="60dp"
-                        android:layout_marginEnd="4dp"
-                        android:backgroundTint="?attr/colorPrimary"
-                        android:text="Add card"
-                        android:textColor="@color/black"
-                        app:cornerRadius="12dp"
-                        android:drawableLeft="@drawable/add" />
-
-                </LinearLayout>
-
                 <TextView
                     android:id="@+id/signlink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:text="t.me/nsline22"
                     android:autoLink="web"
                     android:linksClickable="true"

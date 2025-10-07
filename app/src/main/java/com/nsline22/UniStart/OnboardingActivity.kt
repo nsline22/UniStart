@@ -43,7 +43,6 @@ class OnboardingActivity : AppCompatActivity() {
         binding.viewPager.adapter = viewPagerAdapter
         binding.viewPager.isUserInputEnabled = false
 
-        // Слушатель для обновления кружков при смене страницы
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -66,10 +65,9 @@ class OnboardingActivity : AppCompatActivity() {
             layoutParams.setMargins(margin, 0, margin, 0)
             dot.layoutParams = layoutParams
 
-            // Создаем круглый background
             val background = GradientDrawable()
             background.shape = GradientDrawable.OVAL
-            background.setColor(getDotColor(i == 0)) // Первая точка активная
+            background.setColor(getDotColor(i == 0))
 
             dot.background = background
             binding.dotsContainer.addView(dot)
@@ -81,7 +79,6 @@ class OnboardingActivity : AppCompatActivity() {
         dots.forEachIndexed { index, dot ->
             val isActive = index == currentPosition
 
-            // Плавное изменение цвета
             val background = GradientDrawable()
             background.shape = GradientDrawable.OVAL
             background.setColor(getDotColor(isActive))
@@ -119,14 +116,12 @@ class OnboardingActivity : AppCompatActivity() {
         val currentItem = binding.viewPager.currentItem
         val totalItems = viewPagerAdapter.itemCount
 
-        // Показываем кнопку "Назад" только если не на первой странице
         if (currentItem == 0) {
             binding.backButton.visibility = View.GONE
         } else {
             binding.backButton.visibility = View.VISIBLE
         }
 
-        // Меняем текст кнопки "Далее" на "Завершить" на последней странице
         if (currentItem == totalItems - 1) {
             binding.nextButton.text = "COMPLETE"
         } else {
@@ -136,43 +131,39 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun completeOnboarding() {
         try {
-            // Получаем PIN код из текущего фрагмента
             val currentFragment = getCurrentFragment()
             val pinCode = when (currentFragment) {
                 is PinSetupFragment -> currentFragment.getPinCode()
                 else -> "0000"
             }
 
-            // Получаем выбранное устройство
             val deviceFragment =
                 supportFragmentManager.findFragmentByTag("f1") as? DeviceSelectionFragment
             val selectedDevice = deviceFragment?.getSelectedDevice()
 
-            // Сохраняем настройки
             sharedPreferences.edit().apply {
                 putBoolean("onboarding_complete", true)
                 putString("device_pin", pinCode)
                 selectedDevice?.let {
                     putString("selected_device", it)
                 }
-                apply() // Используем apply() для немедленного сохранения
+                // Устанавливаем флаг первого запуска для синхронизации времени
+                putBoolean("first_run_after_onboarding", true)
+                apply()
             }
 
-            // Логируем для отладки
             android.util.Log.d("Onboarding", "Saved PIN: $pinCode, Device: $selectedDevice")
 
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         } catch (e: Exception) {
             android.util.Log.e("Onboarding", "Error completing onboarding", e)
-            // Если что-то пошло не так, все равно переходим
             sharedPreferences.edit().putBoolean("onboarding_complete", true).apply()
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
 
-    // Добавляем метод для получения текущего фрагмента
     private fun getCurrentFragment(): Fragment? {
         return try {
             val currentItem = binding.viewPager.currentItem
