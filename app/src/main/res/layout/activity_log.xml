@@ -62,9 +62,10 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="8dp"
-            android:background="@drawable/clear_logs_background"
+            android:background=""
             android:contentDescription="Clear logs"
             android:scaleType="centerInside"
+            android:tint="?attr/colorPrimary"
             android:src="@drawable/ic_clear" />
 
     </RelativeLayout>
@@ -103,7 +104,8 @@
             android:textColor="@color/black"
             android:padding="12dp"
             app:cornerRadius="12dp"
-            android:drawableRight="@drawable/send" />
+            android:drawableRight="@drawable/send"
+            android:drawableTint="@color/material_dynamic_neutral10"/>
 
     </LinearLayout>
 

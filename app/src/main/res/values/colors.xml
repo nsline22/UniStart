@@ -9,7 +9,7 @@
     <color name="snackbar_text">@color/material_dynamic_primary80</color>
     <color name="connected_color">@android:color/holo_green_dark</color>
     <color name="disconnected_color">@android:color/holo_red_dark</color>
-    <color name="edittexthint_color">@color/material_dynamic_primary50</color>
+    <color name="edittexthint_color">@color/material_dynamic_secondary60</color>
     <color name="icolor">@color/material_dynamic_tertiary60</color>
     <color name="dot_inactive">#666666</color>
 </resources>

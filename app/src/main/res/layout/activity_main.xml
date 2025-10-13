@@ -61,11 +61,13 @@
 
                 <ImageView
                     android:id="@+id/app_icon"
-                    android:layout_width="65dp"
-                    android:layout_height="65dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:contentDescription="UniStart"
-                    android:src="@mipmap/ic_launcher_foreground"
-                    android:scaleType="fitCenter" />
+                    android:src="@drawable/ic_appic"
+                    android:scaleType="fitCenter"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginBottom="10dp"/>
 
                 <TextView
                     android:id="@+id/headerText"
@@ -93,7 +95,8 @@
                         android:backgroundTint="?attr/colorPrimary"
                         android:textColor="@color/black"
                         app:cornerRadius="12dp"
-                        android:drawableLeft="@drawable/link" />
+                        android:drawableLeft="@drawable/link"
+                        android:drawableTint="@color/material_dynamic_neutral10" />
 
                     <Button
                         android:id="@+id/buttonU"
@@ -104,7 +107,8 @@
                         android:text=""
                         android:textColor="@color/black"
                         app:cornerRadius="12dp"
-                        android:layout_marginStart="3dp"/>
+                        android:layout_marginStart="3dp"
+                        android:drawableTint="@color/material_dynamic_neutral10" />
 
                     <View
                         android:id="@+id/connectionIndicator"
@@ -365,18 +369,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/signlink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="t.me/nsline22"
-                    android:autoLink="web"
-                    android:linksClickable="true"
-                    android:textColorLink="@color/material_dynamic_primary50"
-                    android:textSize="10sp"
-                    android:padding="15dp" />
 
             </LinearLayout>
 
