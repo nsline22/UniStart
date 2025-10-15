@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private val PREFS_NAME = "UniStartPrefs"
-    private var devicePinCode = "0000"
+    private var devicePinCode = "9374"
 
     private var esp32Time = "--:--:--"
     private var esp32Date = "----/--/--"

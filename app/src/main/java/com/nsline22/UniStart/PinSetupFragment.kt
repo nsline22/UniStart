@@ -132,8 +132,8 @@ class PinSetupFragment : Fragment() {
 
             when {
                 pin.isNullOrEmpty() -> {
-                    android.util.Log.d("PinSetupFragment", "PIN is empty, using default: 0000")
-                    "0000"
+                    android.util.Log.d("PinSetupFragment", "PIN is empty, using default: 9374")
+                    "9374"
                 }
 
                 pin.length != 4 -> {
@@ -151,7 +151,7 @@ class PinSetupFragment : Fragment() {
             }
         } catch (e: Exception) {
             android.util.Log.e("PinSetupFragment", "Error getting PIN", e)
-            "0000"
+            "9374"
         }
     }
 }
