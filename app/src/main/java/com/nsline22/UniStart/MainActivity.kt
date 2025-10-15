@@ -130,6 +130,10 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupButtons()
         updateUIForConnectedState(false)
+
+        // Сбрасываем все значения при запуске
+        resetAllValues()
+
         requestBluetoothPermission()
         setupSettingsButton()
         setupLogsButton()
@@ -375,11 +379,21 @@ class MainActivity : AppCompatActivity() {
             }
             line.startsWith("ETEMP-") -> {
                 val temp = line.substring(6).trim()
-                binding.engineTempStatus.text = "${temp}°C"
+                // Проверяем, что температура валидна
+                if (temp.isNotEmpty() && temp != "nan" && temp != "-127.00") {
+                    binding.engineTempStatus.text = "${temp}°C"
+                } else {
+                    binding.engineTempStatus.text = "--°C"
+                }
             }
             line.startsWith("STEMP-") -> {
                 val temp = line.substring(6).trim()
-                binding.streetTempStatus.text = "${temp}°C"
+                // Проверяем, что температура валидна
+                if (temp.isNotEmpty() && temp != "nan" && temp != "-127.00") {
+                    binding.streetTempStatus.text = "${temp}°C"
+                } else {
+                    binding.streetTempStatus.text = "--°C"
+                }
             }
             else -> {
                 // Это ответ на команду пользователя - добавляем в логи
@@ -473,9 +487,31 @@ class MainActivity : AppCompatActivity() {
                 // Сбрасываем время и дату при отключении
                 esp32Time = "--:--:--"
                 esp32Date = "----/--/--"
-                binding.timeTextView.text = esp32Time
-                binding.dateTextView.text = esp32Date
+
+                // Сбрасываем все статусы на OFF/0
+                resetAllValues()
             }
+        }
+    }
+
+    // Новая функция для сброса всех значений
+    private fun resetAllValues() {
+        runOnUiThread {
+            // Сбрасываем статусы реле и LED
+            binding.ignitionStatus.text = "OFF"
+            binding.starterStatus.text = "OFF"
+            binding.ledStatus.text = "OFF"
+
+            // Сбрасываем напряжение на 0
+            binding.voltageStatus.text = "0.0V"
+
+            // Сбрасываем температуру на "--"
+            binding.engineTempStatus.text = "--°C"
+            binding.streetTempStatus.text = "--°C"
+
+            // Сбрасываем время и дату
+            binding.timeTextView.text = esp32Time
+            binding.dateTextView.text = esp32Date
         }
     }
 
