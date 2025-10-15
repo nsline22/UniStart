@@ -145,7 +145,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 // Отправляем команду на ESP32 для смены пинкода
                 val changePinCommand = "P:$newPin"
-                MainActivity.instance?.sendCommandDirectly(changePinCommand)
+                MainActivity.instance?.sendCommandSilent(changePinCommand)
 
                 android.widget.Toast.makeText(
                     this,

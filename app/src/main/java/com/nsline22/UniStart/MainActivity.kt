@@ -519,7 +519,7 @@ class MainActivity : AppCompatActivity() {
         sendCommandToESP32(command, shouldLog = true)
     }
 
-    private fun sendCommandSilent(command: String) {
+    fun sendCommandSilent(command: String) {
         sendCommandToESP32(command, shouldLog = false)
     }
 
