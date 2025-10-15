@@ -9,15 +9,44 @@
 
     <!-- Кнопка назад -->
 
-    <Button
-        android:id="@+id/backButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Back"
-        android:textColor="?attr/colorPrimary"
-        android:drawableLeft="@drawable/ic_arrow_backward" />
+        android:layout_marginBottom="15dp">
+
+        <!-- Кнопка назад -->
+        <Button
+            android:id="@+id/backButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="?attr/colorPrimary"
+            android:drawableLeft="@drawable/ic_arrow_backward"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
+
+        <!-- Надпись Logs по центру -->
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logs"
+            android:textColor="@color/material_dynamic_primary70"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_visibility_off"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="5dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="15dp" />
+
+    </RelativeLayout>
 
     <!-- Контейнер для окна вывода с кнопкой очистки -->
     <RelativeLayout

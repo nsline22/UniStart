@@ -73,7 +73,7 @@ class LogActivity : AppCompatActivity() {
         binding.outputTextView.text = ""
         val prefs = getSharedPreferences("UniStartPrefs", MODE_PRIVATE)
         prefs.edit().putString("command_history", "").apply()
-        addToLogs("Cleared")
+        addToLogs("Logs cleared")
     }
 
     private fun startLogUpdates() {

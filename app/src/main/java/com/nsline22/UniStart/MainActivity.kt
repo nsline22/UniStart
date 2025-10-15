@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonU.setOnClickListener {
             sendCommand(devicePinCode)
-            addToCommandHistory("> Unlock command sent")
+            addToCommandHistory("> Unlock PIN sent")
         }
 
         binding.ignitionContainer.setOnClickListener {
@@ -386,7 +386,14 @@ class MainActivity : AppCompatActivity() {
                 if (line.isNotEmpty() && !line.startsWith("I-") && !line.startsWith("S-") &&
                     !line.startsWith("L-") && !line.startsWith("T-") && !line.startsWith("V-") &&
                     !line.startsWith("ETEMP-") && !line.startsWith("STEMP-")) {
-                    addToCommandHistory(line)
+
+                    // Скрываем вывод пинкода в логах
+                    val filteredLine = if (line.contains(devicePinCode)) {
+                        line.replace(devicePinCode, "****")
+                    } else {
+                        line
+                    }
+                    addToCommandHistory(filteredLine)
                 }
             }
         }
@@ -462,6 +469,12 @@ class MainActivity : AppCompatActivity() {
                 updateUIForConnectedState(false)
                 showMessage("Disconnected or unable to connect")
                 stopBlinkingIndicator()
+
+                // Сбрасываем время и дату при отключении
+                esp32Time = "--:--:--"
+                esp32Date = "----/--/--"
+                binding.timeTextView.text = esp32Time
+                binding.dateTextView.text = esp32Date
             }
         }
     }
@@ -484,7 +497,13 @@ class MainActivity : AppCompatActivity() {
         if (!isConnected) {
             showMessage("Not connected to ESP32")
             if (shouldLog) {
-                addToCommandHistory("> $command (not connected)")
+                // Скрываем пинкод в логах
+                val filteredCommand = if (command.contains(devicePinCode)) {
+                    command.replace(devicePinCode, "****")
+                } else {
+                    command
+                }
+                addToCommandHistory("> $filteredCommand (not connected)")
             }
             return
         }
@@ -492,7 +511,13 @@ class MainActivity : AppCompatActivity() {
         val cleanCommand = command.trim()
 
         if (shouldLog) {
-            addToCommandHistory("> $cleanCommand")
+            // Скрываем пинкод в логах
+            val filteredCommand = if (cleanCommand.contains(devicePinCode)) {
+                cleanCommand.replace(devicePinCode, "****")
+            } else {
+                cleanCommand
+            }
+            addToCommandHistory("> $filteredCommand")
         }
 
         Thread {
