@@ -46,7 +46,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginBottom="5dp"
                 android:layout_centerInParent="true"
-                android:layout_marginEnd="15dp" />
+                android:layout_marginEnd="15dp"
+                android:tint="?attr/colorPrimary" />
 
         </RelativeLayout>
 
@@ -165,10 +166,10 @@
                 android:layout_marginEnd="4dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Change PIN"
-                android:textColor="@color/black"
+                android:textColor="@color/material_dynamic_neutral_variant10"
                 app:cornerRadius="12dp"
                 android:drawableLeft="@drawable/ic_pin"
-                android:drawableTint="@color/material_dynamic_neutral10" />
+                android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             <!-- Кнопка синхронизации времени -->
             <Button
@@ -178,10 +179,10 @@
                 android:layout_marginEnd="4dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Sync Time"
-                android:textColor="@color/black"
+                android:textColor="@color/material_dynamic_neutral_variant10"
                 app:cornerRadius="12dp"
                 android:drawableLeft="@drawable/ic_sync"
-                android:drawableTint="@color/material_dynamic_neutral10" />
+                android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             </LinearLayout>
 
@@ -208,10 +209,10 @@
                     android:layout_marginEnd="4dp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="List cards"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_dynamic_neutral_variant10"
                     app:cornerRadius="12dp"
                     android:drawableLeft="@drawable/ls"
-                    android:drawableTint="@color/material_dynamic_neutral10" />
+                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
                 <Button
                     android:id="@+id/addCardButton"
@@ -220,10 +221,10 @@
                     android:layout_marginStart="4dp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="Add card"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_dynamic_neutral_variant10"
                     app:cornerRadius="12dp"
                     android:drawableLeft="@drawable/add"
-                    android:drawableTint="@color/material_dynamic_neutral10" />
+                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             </LinearLayout>
 
@@ -243,11 +244,11 @@
                 android:layout_marginEnd="4dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Reset Settings"
-                android:textColor="@color/black"
+                android:textColor="@color/material_dynamic_neutral_variant10"
                 app:cornerRadius="12dp"
                 android:drawableLeft="@drawable/ic_reset"
                 android:layout_marginBottom="15dp"
-                android:drawableTint="@color/material_dynamic_neutral10" />
+                android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             <TextView
                 android:layout_width="wrap_content"

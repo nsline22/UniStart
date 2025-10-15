@@ -138,13 +138,18 @@ class SettingsActivity : AppCompatActivity() {
         builder.setPositiveButton("Save") { dialog, _ ->
             val newPin = input.text.toString().trim()
             if (newPin.length == 4 && newPin.all { it.isDigit() }) {
+                // Сохраняем пинкод в SharedPreferences
                 sharedPreferences.edit().putString("device_pin", newPin).apply()
                 binding.pinInfoText.tag = newPin
                 binding.pinInfoText.text = "••••"
 
+                // Отправляем команду на ESP32 для смены пинкода
+                val changePinCommand = "P:$newPin"
+                MainActivity.instance?.sendCommandDirectly(changePinCommand)
+
                 android.widget.Toast.makeText(
                     this,
-                    "PIN changed successfully",
+                    "PIN changed and sent to device",
                     android.widget.Toast.LENGTH_SHORT
                 ).show()
 

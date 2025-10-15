@@ -25,13 +25,15 @@
 
     <Button
         android:id="@+id/refreshButton"
-        android:layout_width="100dp"
+        android:layout_width="160dp"
         android:layout_height="50dp"
         android:backgroundTint="?attr/colorPrimary"
         android:text="Refresh"
-        android:textColor="@color/black"
+        android:textColor="@color/material_dynamic_neutral_variant10"
         app:cornerRadius="12dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="24dp"
+        android:drawableLeft="@drawable/ic_refresh"
+        android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
     <TextView
         android:layout_width="match_parent"

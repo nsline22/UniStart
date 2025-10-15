@@ -24,7 +24,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Settings"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_settings" />
+            android:src="@drawable/ic_settings"
+            android:tint="?attr/colorPrimary"/>
 
         <ImageButton
             android:id="@+id/logsButton"
@@ -35,7 +36,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Open Logs"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_visibility_off" />
+            android:src="@drawable/ic_visibility_off"
+            android:tint="?attr/colorPrimary"/>
 
     </RelativeLayout>
 
@@ -93,10 +95,10 @@
                         android:layout_height="wrap_content"
                         android:text="@string/connect"
                         android:backgroundTint="?attr/colorPrimary"
-                        android:textColor="@color/black"
+                        android:textColor="@color/material_dynamic_neutral_variant10"
                         app:cornerRadius="12dp"
                         android:drawableLeft="@drawable/link"
-                        android:drawableTint="@color/material_dynamic_neutral10" />
+                        android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
                     <Button
                         android:id="@+id/buttonU"
@@ -108,7 +110,7 @@
                         android:textColor="@color/black"
                         app:cornerRadius="12dp"
                         android:layout_marginStart="3dp"
-                        android:drawableTint="@color/material_dynamic_neutral10" />
+                        android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
                     <View
                         android:id="@+id/connectionIndicator"
@@ -182,7 +184,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Ignition"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
@@ -214,7 +216,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Starter"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
@@ -257,7 +259,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="LED"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
@@ -285,7 +287,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Voltage"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
@@ -323,7 +325,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Engine Temp"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 
@@ -351,7 +353,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Street Temp"
-                                android:textColor="@color/material_dynamic_primary60"
+                                android:textColor="@color/material_dynamic_secondary60"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
 

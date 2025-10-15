@@ -27,7 +27,8 @@
         android:layout_marginBottom="24dp"
         android:maxLines="1"
         android:imeOptions="actionDone"
-        android:hint="PIN" />
+        android:hint="PIN"
+        android:textColorHint="@color/edittexthint_color"/>
 
     <TextView
         android:layout_width="match_parent"
