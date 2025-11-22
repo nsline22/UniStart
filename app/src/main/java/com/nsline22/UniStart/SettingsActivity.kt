@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.InputType
 import android.widget.EditText
+import android.text.InputFilter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.nsline22.UniStart.databinding.ActivitySettingsBinding
@@ -32,6 +33,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setupCurrentSettings()
         setupListeners()
+        setupBackButton() // Добавьте этот вызов
     }
 
     private fun setupCurrentSettings() {
@@ -59,6 +61,18 @@ class SettingsActivity : AppCompatActivity() {
             "$deviceName\n$formattedAddress"
         } catch (e: Exception) {
             formatDeviceAddress(address)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    private fun setupBackButton() {
+        binding.aboutBackButton.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
 
@@ -123,6 +137,10 @@ class SettingsActivity : AppCompatActivity() {
         input.hint = "Enter new 4-digit PIN"
         input.maxLines = 1
 
+        // Добавляем ограничение на 4 цифры
+        val filters = arrayOf<InputFilter>(InputFilter.LengthFilter(4))
+        input.filters = filters
+
         val container = android.widget.FrameLayout(this)
         val params = android.widget.FrameLayout.LayoutParams(
             android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
@@ -137,6 +155,8 @@ class SettingsActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Save") { dialog, _ ->
             val newPin = input.text.toString().trim()
+
+            // Усиленная проверка
             if (newPin.length == 4 && newPin.all { it.isDigit() }) {
                 // Сохраняем пинкод в SharedPreferences
                 sharedPreferences.edit().putString("device_pin", newPin).apply()
@@ -159,8 +179,13 @@ class SettingsActivity : AppCompatActivity() {
                 android.widget.Toast.makeText(
                     this,
                     "PIN must be exactly 4 digits",
-                    android.widget.Toast.LENGTH_SHORT
+                    android.widget.Toast.LENGTH_LONG
                 ).show()
+
+                // Показываем диалог снова при ошибке
+                handler.postDelayed({
+                    showChangePinDialog()
+                }, 500)
             }
             dialog.dismiss()
         }
@@ -169,7 +194,21 @@ class SettingsActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        builder.show()
+        val dialog = builder.show()
+
+        // Делаем кнопку Save изначально неактивной если поле пустое
+        val positiveButton = dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+        positiveButton.isEnabled = false
+
+        // Слушатель изменений текста
+        input.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                val text = s?.toString() ?: ""
+                positiveButton.isEnabled = text.length == 4 && text.all { it.isDigit() }
+            }
+        })
 
         // Показываем клавиатуру
         input.requestFocus()

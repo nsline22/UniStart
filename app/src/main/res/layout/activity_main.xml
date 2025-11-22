@@ -27,6 +27,18 @@
             android:src="@drawable/ic_settings"
             android:tint="?attr/colorPrimary"/>
 
+        <ImageView
+            android:id="@+id/app_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="UniStart"
+            android:src="@drawable/ic_appic"
+            android:scaleType="fitCenter"
+            android:tint="?attr/colorPrimary"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
         <ImageButton
             android:id="@+id/logsButton"
             android:layout_width="40dp"
@@ -60,26 +72,6 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/app_icon"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:contentDescription="UniStart"
-                    android:src="@drawable/ic_appic"
-                    android:scaleType="fitCenter"
-                    android:tint="?attr/colorPrimary"
-                    android:layout_marginBottom="10dp"/>
-
-                <TextView
-                    android:id="@+id/headerText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="UniStart"
-                    android:textColor="@color/material_dynamic_primary70"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="20dp" />
 
                 <!-- Панель подключения -->
                 <LinearLayout

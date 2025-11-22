@@ -60,4 +60,27 @@
         <item name="android:fadeScrollbars">false</item>
         <item name="android:scrollbarThumbVertical">@drawable/scrollbar_thumb</item>
     </style>
+
+    <style name="Theme.Nsline22.Legacy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/background_dark_legacy</item>
+        <item name="colorPrimary">@color/primary_legacy</item>
+        <item name="colorPrimaryVariant">@color/primary_variant_legacy</item>
+        <item name="colorOnPrimary">@color/on_primary_legacy</item>
+        <item name="colorSecondary">@color/secondary_legacy</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant_legacy</item>
+        <item name="colorOnSecondary">@color/on_secondary_legacy</item>
+        <item name="android:statusBarColor">@color/background_dark_legacy</item>
+        <item name="android:navigationBarColor">@color/background_dark_legacy</item>
+    </style>
+
+    <!-- EditText стили для legacy -->
+    <style name="EditTextStyle.Legacy" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary_legacy</item>
+        <item name="android:textColorHint">@color/primary_legacy</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
 </resources>

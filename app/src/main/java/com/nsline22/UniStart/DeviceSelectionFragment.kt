@@ -101,7 +101,6 @@ class DeviceSelectionFragment : Fragment() {
     private fun setupBluetooth() {
         if (bluetoothAdapter.isEnabled) {
             refreshPairedDevices()
-            Toast.makeText(requireContext(), "Bluetooth is ready", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(requireContext(), "Please enable Bluetooth", Toast.LENGTH_SHORT).show()
         }
@@ -142,7 +141,6 @@ class DeviceSelectionFragment : Fragment() {
             if (deviceList.isEmpty()) {
                 Toast.makeText(requireContext(), "No paired devices found", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Found ${deviceList.size} paired devices", Toast.LENGTH_SHORT).show()
             }
         } catch (e: SecurityException) {
             Toast.makeText(requireContext(), "Bluetooth permission denied", Toast.LENGTH_SHORT).show()

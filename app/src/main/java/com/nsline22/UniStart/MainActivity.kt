@@ -117,6 +117,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Проверяем версию Android перед установкой темы
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            setTheme(R.style.Theme_Nsline22_Legacy)
+        }
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

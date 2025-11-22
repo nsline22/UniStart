@@ -127,23 +127,21 @@ class PinSetupFragment : Fragment() {
 
     fun getPinCode(): String {
         return try {
-            val pin = binding.pinInput.text?.toString()?.trim()
+            val pin = binding.pinInput.text?.toString()?.trim() ?: ""
             android.util.Log.d("PinSetupFragment", "Current PIN input: '$pin'")
 
             when {
-                pin.isNullOrEmpty() -> {
-                    android.util.Log.d("PinSetupFragment", "PIN is empty, using default: 9374")
-                    "9374"
+                pin.isEmpty() -> {
+                    showPinError("PIN cannot be empty")
+                    ""
                 }
-
-                pin.length != 4 -> {
-                    android.util.Log.d(
-                        "PinSetupFragment",
-                        "PIN length is ${pin.length}, using: $pin"
-                    )
-                    pin // Используем то что введено, даже если не 4 цифры
+                pin.length < 4 -> {
+                    pin // Возвращаем что есть, но онбординг не пройдет
                 }
-
+                !pin.all { it.isDigit() } -> {
+                    showPinError("PIN must contain only digits")
+                    ""
+                }
                 else -> {
                     android.util.Log.d("PinSetupFragment", "Valid PIN: $pin")
                     pin
@@ -151,7 +149,11 @@ class PinSetupFragment : Fragment() {
             }
         } catch (e: Exception) {
             android.util.Log.e("PinSetupFragment", "Error getting PIN", e)
-            "9374"
+            ""
         }
+    }
+
+    private fun showPinError(message: String) {
+        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }
