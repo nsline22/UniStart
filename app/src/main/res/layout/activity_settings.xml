@@ -262,7 +262,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="UniStart v4.0"
+                android:text="UniStart v4.5"
                 android:textSize="12sp"
                 android:textColor="@color/material_dynamic_primary60"
                 android:layout_marginBottom="8dp" />
