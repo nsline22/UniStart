@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="@color/background_dark"
     android:padding="15dp"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,7 +67,8 @@
                 android:text="Connection"
                 android:textColor="@color/material_dynamic_secondary60"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"/>
 
             <!-- Контейнер устройства -->
             <LinearLayout
@@ -161,9 +163,9 @@
             <!-- Кнопка смены PIN -->
             <Button
                 android:id="@+id/changePinButton"
-                android:layout_width="160dp"
+                android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="7dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Change PIN"
                 android:textColor="@color/material_dynamic_neutral_variant10"
@@ -174,9 +176,9 @@
             <!-- Кнопка синхронизации времени -->
             <Button
                 android:id="@+id/syncTimeButton"
-                android:layout_width="160dp"
+                android:layout_width="140dp"
                 android:layout_height="60dp"
-                android:layout_marginEnd="4dp"
+
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Sync Time"
                 android:textColor="@color/material_dynamic_neutral_variant10"
@@ -204,9 +206,9 @@
 
                 <Button
                     android:id="@+id/listCardsButton"
-                    android:layout_width="160dp"
+                    android:layout_width="140dp"
                     android:layout_height="60dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="7dp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="List cards"
                     android:textColor="@color/material_dynamic_neutral_variant10"
@@ -216,9 +218,8 @@
 
                 <Button
                     android:id="@+id/addCardButton"
-                    android:layout_width="160dp"
+                    android:layout_width="140dp"
                     android:layout_height="60dp"
-                    android:layout_marginStart="4dp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="Add card"
                     android:textColor="@color/material_dynamic_neutral_variant10"
@@ -241,7 +242,7 @@
                 android:id="@+id/factoryResetButton"
                 android:layout_width="200dp"
                 android:layout_height="60dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="7dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Reset Settings"
                 android:textColor="@color/material_dynamic_neutral_variant10"

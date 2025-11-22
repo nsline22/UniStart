@@ -14,6 +14,7 @@ class PinSetupFragment : Fragment() {
 
     private var _binding: FragmentPinSetupBinding? = null
     private val binding get() = _binding!!
+    private var isFragmentVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,81 +26,70 @@ class PinSetupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupPinInput()
-
-        // Гарантированный показ клавиатуры
-        binding.root.postDelayed({
-            forceShowKeyboard()
-        }, 500)
     }
 
     private fun setupPinInput() {
-        // Устанавливаем hint
         binding.pinInput.hint = "PIN"
-
-        // Настраиваем для числового ввода
         binding.pinInput.inputType = InputType.TYPE_CLASS_NUMBER
         binding.pinInput.isFocusable = true
         binding.pinInput.isFocusableInTouchMode = true
-        binding.pinInput.requestFocus()
 
-        // Очищаем при фокусе (только если пусто)
-        binding.pinInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.pinInput.text?.isEmpty() == true) {
-                binding.pinInput.text?.clear()
+        binding.pinInput.setOnClickListener {
+            if (isFragmentVisible) {
+                forceShowKeyboard()
             }
         }
 
-        // Показываем клавиатуру при касании
-        binding.pinInput.setOnClickListener {
-            forceShowKeyboard()
-        }
-
-        // Также показываем клавиатуру при касании всей области
         binding.root.setOnClickListener {
-            forceShowKeyboard()
+            if (isFragmentVisible) {
+                forceShowKeyboard()
+            }
         }
     }
 
-    private fun forceShowKeyboard() {
-        try {
-            binding.pinInput.requestFocus()
-            binding.pinInput.isFocusable = true
-            binding.pinInput.isFocusableInTouchMode = true
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        isFragmentVisible = menuVisible
 
-            val inputMethodManager = ContextCompat.getSystemService(
-                requireContext(),
-                InputMethodManager::class.java
-            )
-
-            // Несколько попыток показать клавиатуру
-            inputMethodManager?.showSoftInput(binding.pinInput, InputMethodManager.SHOW_IMPLICIT)
-
-            // Дополнительная попытка через 100мс
-            binding.pinInput.postDelayed({
-                inputMethodManager?.showSoftInput(
-                    binding.pinInput,
-                    InputMethodManager.SHOW_IMPLICIT
-                )
-            }, 100)
-
-            // Еще одна попытка через 300мс
-            binding.pinInput.postDelayed({
-                inputMethodManager?.showSoftInput(binding.pinInput, InputMethodManager.SHOW_FORCED)
+        if (menuVisible && _binding != null) {
+            binding.root.postDelayed({
+                if (isFragmentVisible && _binding != null) {
+                    binding.pinInput.requestFocus()
+                    forceShowKeyboard()
+                }
             }, 300)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } else if (_binding != null) {
+            hideKeyboard()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        // Показываем клавиатуру при возвращении на фрагмент
-        binding.root.postDelayed({
-            forceShowKeyboard()
-        }, 200)
+        if (isFragmentVisible && _binding != null) {
+            binding.root.postDelayed({
+                if (isFragmentVisible && _binding != null) {
+                    binding.pinInput.requestFocus()
+                    forceShowKeyboard()
+                }
+            }, 300)
+        }
+    }
+
+    private fun forceShowKeyboard() {
+        if (_binding == null || !isFragmentVisible) return
+
+        try {
+            binding.pinInput.requestFocus()
+
+            val imm = ContextCompat.getSystemService(
+                requireContext(),
+                InputMethodManager::class.java
+            )
+            imm?.showSoftInput(binding.pinInput, InputMethodManager.SHOW_IMPLICIT)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onPause() {
@@ -108,12 +98,14 @@ class PinSetupFragment : Fragment() {
     }
 
     private fun hideKeyboard() {
+        if (_binding == null) return
+
         try {
-            val inputMethodManager = ContextCompat.getSystemService(
+            val imm = ContextCompat.getSystemService(
                 requireContext(),
                 InputMethodManager::class.java
             )
-            inputMethodManager?.hideSoftInputFromWindow(binding.pinInput.windowToken, 0)
+            imm?.hideSoftInputFromWindow(binding.pinInput.windowToken, 0)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -128,32 +120,22 @@ class PinSetupFragment : Fragment() {
     fun getPinCode(): String {
         return try {
             val pin = binding.pinInput.text?.toString()?.trim() ?: ""
-            android.util.Log.d("PinSetupFragment", "Current PIN input: '$pin'")
 
             when {
                 pin.isEmpty() -> {
-                    showPinError("PIN cannot be empty")
                     ""
                 }
                 pin.length < 4 -> {
-                    pin // Возвращаем что есть, но онбординг не пройдет
-                }
-                !pin.all { it.isDigit() } -> {
-                    showPinError("PIN must contain only digits")
-                    ""
-                }
-                else -> {
-                    android.util.Log.d("PinSetupFragment", "Valid PIN: $pin")
                     pin
                 }
+                !pin.all { it.isDigit() } -> {
+                    showMessage("PIN must contain only digits")
+                    ""
+                }
+                else -> pin
             }
         } catch (e: Exception) {
-            android.util.Log.e("PinSetupFragment", "Error getting PIN", e)
             ""
         }
-    }
-
-    private fun showPinError(message: String) {
-        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }

@@ -13,19 +13,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.nsline22.UniStart.databinding.FragmentDeviceSelectionBinding
-import com.google.android.material.snackbar.Snackbar
 
 class DeviceSelectionFragment : Fragment() {
 
     private var _binding: FragmentDeviceSelectionBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var bluetoothAdapter: BluetoothAdapter
-    private lateinit var pairedDevices: Set<BluetoothDevice>
+    private var bluetoothAdapter: BluetoothAdapter? = null
+    private var pairedDevices: Set<BluetoothDevice> = emptySet()
     private val REQUEST_BLUETOOTH_PERMISSION = 101
     private val REQUEST_ENABLE_BLUETOOTH = 102
 
@@ -39,12 +37,21 @@ class DeviceSelectionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkBluetoothPermissions()
 
-        // Кнопка обновления списка устройств
-        binding.refreshButton.setOnClickListener {
-            refreshPairedDevices()
+        // Инициализируем адаптер сразу
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        if (bluetoothAdapter == null) {
+            showMessage("Bluetooth not supported")
+            return
         }
+
+        binding.refreshButton.setOnClickListener {
+            checkBluetoothPermissions()
+        }
+
+        // Запрашиваем разрешения при показе фрагмента
+        checkBluetoothPermissions()
     }
 
     override fun onDestroyView() {
@@ -54,98 +61,90 @@ class DeviceSelectionFragment : Fragment() {
 
     private fun checkBluetoothPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (ContextCompat.checkSelfPermission(
+            // Android 12+
+            when {
+                ContextCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
-                    REQUEST_BLUETOOTH_PERMISSION
-                )
-            } else {
-                checkBluetoothEnabled()
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    checkBluetoothEnabled()
+                }
+                else -> {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.BLUETOOTH_CONNECT),
+                        REQUEST_BLUETOOTH_PERMISSION
+                    )
+                }
             }
         } else {
-            checkBluetoothEnabled()
+            // Android 6-11
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    checkBluetoothEnabled()
+                }
+                else -> {
+                    requestPermissions(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        ),
+                        REQUEST_BLUETOOTH_PERMISSION
+                    )
+                }
+            }
         }
     }
 
     private fun checkBluetoothEnabled() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if (bluetoothAdapter == null) {
-            Toast.makeText(requireContext(), "Bluetooth not supported", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val adapter = bluetoothAdapter ?: return
 
-        if (!bluetoothAdapter.isEnabled) {
-            // Запрашиваем включение Bluetooth
+        if (!adapter.isEnabled) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.BLUETOOTH_CONNECT
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
-                }
-            } else {
+            try {
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH)
+            } catch (e: SecurityException) {
+                showMessage("Cannot enable Bluetooth")
             }
         } else {
-            setupBluetooth()
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun setupBluetooth() {
-        if (bluetoothAdapter.isEnabled) {
             refreshPairedDevices()
-        } else {
-            Toast.makeText(requireContext(), "Please enable Bluetooth", Toast.LENGTH_SHORT).show()
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun refreshPairedDevices() {
-        if (!bluetoothAdapter.isEnabled) {
-            Toast.makeText(requireContext(), "Bluetooth is disabled", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val adapter = bluetoothAdapter ?: return
 
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            Toast.makeText(requireContext(), "Bluetooth permission required", Toast.LENGTH_SHORT).show()
+        if (!adapter.isEnabled) {
+            showMessage("Bluetooth is disabled")
             return
         }
 
         try {
-            pairedDevices = bluetoothAdapter.bondedDevices
+            pairedDevices = adapter.bondedDevices
             val deviceList = mutableListOf<String>()
 
             pairedDevices.forEach { device ->
-                deviceList.add("${device.name} (${device.address})")
+                deviceList.add("${device.name ?: "Unknown"} (${device.address})")
             }
 
-            val adapter = ArrayAdapter(
+            val arrayAdapter = ArrayAdapter(
                 requireContext(),
                 R.layout.spinner_item,
                 deviceList
             )
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.deviceSpinner.adapter = adapter
+            arrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.deviceSpinner.adapter = arrayAdapter
 
             if (deviceList.isEmpty()) {
-                Toast.makeText(requireContext(), "No paired devices found", Toast.LENGTH_SHORT).show()
-            } else {
+                showMessage("No paired devices found")
             }
         } catch (e: SecurityException) {
-            Toast.makeText(requireContext(), "Bluetooth permission denied", Toast.LENGTH_SHORT).show()
+            showMessage("Permission denied")
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Error refreshing devices", Toast.LENGTH_SHORT).show()
+            showMessage("Error: ${e.message}")
         }
     }
 
@@ -160,11 +159,12 @@ class DeviceSelectionFragment : Fragment() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 checkBluetoothEnabled()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Bluetooth permission required to discover devices",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    "Bluetooth permission required"
+                } else {
+                    "Location permission required for Bluetooth"
+                }
+                showMessage(message)
             }
         }
     }
@@ -172,16 +172,11 @@ class DeviceSelectionFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when (requestCode) {
-            REQUEST_ENABLE_BLUETOOTH -> {
-                if (resultCode == android.app.Activity.RESULT_OK) {
-                    // Bluetooth включен пользователем
-                    setupBluetooth()
-                    Toast.makeText(requireContext(), "Bluetooth enabled", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Пользователь отказался включать Bluetooth
-                    Toast.makeText(requireContext(), "Bluetooth is required for device connection", Toast.LENGTH_LONG).show()
-                }
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode == android.app.Activity.RESULT_OK) {
+                refreshPairedDevices()
+            } else {
+                showMessage("Bluetooth is required")
             }
         }
     }

@@ -21,10 +21,7 @@ class OnboardingActivity : AppCompatActivity() {
     private val dots = mutableListOf<View>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Проверяем версию Android перед установкой темы
-        // Простая проверка версии Android
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            // Для Android ниже 12 используем legacy тему
             setTheme(R.style.Theme_Nsline22_Legacy)
         }
 
@@ -49,7 +46,7 @@ class OnboardingActivity : AppCompatActivity() {
     private fun setupViewPager() {
         viewPagerAdapter = OnboardingViewPagerAdapter(this)
         binding.viewPager.adapter = viewPagerAdapter
-        binding.viewPager.isUserInputEnabled = true // Разрешаем свайпы
+        binding.viewPager.isUserInputEnabled = true
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -139,29 +136,37 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun completeOnboarding() {
         try {
-            val currentFragment = getCurrentFragment()
-            val pinCode = when (currentFragment) {
-                is PinSetupFragment -> {
-                    val pin = currentFragment.getPinCode()
-                    // Проверяем длину пинкода
-                    if (pin.length < 4) {
-                        showPinError("PIN must be exactly 4 digits")
-                        return // Не завершаем онбординг
-                    }
-                    pin
-                }
-                else -> "9374" // дефолтный пин
-            }
-
+            // Получаем фрагмент выбора устройства (страница 1)
             val deviceFragment = supportFragmentManager.findFragmentByTag("f1") as? DeviceSelectionFragment
             val selectedDevice = deviceFragment?.getSelectedDevice()
 
             // Проверяем, что устройство выбрано
             if (selectedDevice.isNullOrEmpty()) {
-                showPinError("Please select a Bluetooth device")
-                return // Не завершаем онбординг
+                showError("Please select a Bluetooth device", 1)
+                return
             }
 
+            // Получаем фрагмент PIN (страница 2)
+            val pinFragment = supportFragmentManager.findFragmentByTag("f2") as? PinSetupFragment
+            val pinCode = pinFragment?.getPinCode() ?: ""
+
+            // Проверяем PIN
+            if (pinCode.isEmpty()) {
+                showError("Please enter a PIN code", 2)
+                return
+            }
+
+            if (pinCode.length < 4) {
+                showError("PIN must be exactly 4 digits", 2)
+                return
+            }
+
+            if (!pinCode.all { it.isDigit() }) {
+                showError("PIN must contain only digits", 2)
+                return
+            }
+
+            // Всё ок - сохраняем и переходим
             sharedPreferences.edit().apply {
                 putBoolean("onboarding_complete", true)
                 putString("device_pin", pinCode)
@@ -174,16 +179,16 @@ class OnboardingActivity : AppCompatActivity() {
 
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+
         } catch (e: Exception) {
             android.util.Log.e("Onboarding", "Error completing onboarding", e)
-            showPinError("Error completing setup. Please try again.")
+            showError("Error completing setup. Please try again.", 2)
         }
     }
 
-    private fun showPinError(message: String) {
+    private fun showError(message: String, goToPage: Int) {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show()
-        // Возвращаем на фрагмент с пинкодом
-        binding.viewPager.currentItem = 2
+        binding.viewPager.currentItem = goToPage
     }
 
     private fun getCurrentFragment(): Fragment? {

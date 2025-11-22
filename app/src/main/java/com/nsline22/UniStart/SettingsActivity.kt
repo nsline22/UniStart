@@ -93,7 +93,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.syncTimeButton.setOnClickListener {
+        binding.syncTimeButton.setDebouncedClickListener(2000L) {
             syncTime()
         }
 
@@ -101,12 +101,12 @@ class SettingsActivity : AppCompatActivity() {
             showChangePinDialog()
         }
 
-        binding.listCardsButton.setOnClickListener {
+        binding.listCardsButton.setDebouncedClickListener(2000L) {
             MainActivity.instance?.openLogsWithClear()
             MainActivity.instance?.sendCommandDirectly("F")
         }
 
-        binding.addCardButton.setOnClickListener {
+        binding.addCardButton.setDebouncedClickListener(2000L) {
             MainActivity.instance?.openLogsWithClear()
             MainActivity.instance?.sendCommandDirectly("A")
         }
@@ -167,20 +167,12 @@ class SettingsActivity : AppCompatActivity() {
                 val changePinCommand = "P:$newPin"
                 MainActivity.instance?.sendCommandSilent(changePinCommand)
 
-                android.widget.Toast.makeText(
-                    this,
-                    "PIN changed and sent to device",
-                    android.widget.Toast.LENGTH_SHORT
-                ).show()
+                showMessage("PIN changed and sent to device")
 
                 // Обновляем PIN в MainActivity
                 MainActivity.instance?.onResume()
             } else {
-                android.widget.Toast.makeText(
-                    this,
-                    "PIN must be exactly 4 digits",
-                    android.widget.Toast.LENGTH_LONG
-                ).show()
+                showMessage("PIN must be exactly 4 digits")
 
                 // Показываем диалог снова при ошибке
                 handler.postDelayed({
@@ -221,17 +213,9 @@ class SettingsActivity : AppCompatActivity() {
     private fun syncTime() {
         MainActivity.instance?.let { mainActivity ->
             mainActivity.syncTimeWithESP32()
-            android.widget.Toast.makeText(
-                this,
-                "Synchronizing time with ESP32...",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+            showMessage("Synchronizing time with ESP32...")
         } ?: run {
-            android.widget.Toast.makeText(
-                this,
-                "MainActivity not available. Please return to main screen.",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+            showMessage("MainActivity not available. Please return to main screen.")
         }
     }
 
@@ -278,7 +262,7 @@ class SettingsActivity : AppCompatActivity() {
 
             showInfoDialog("Device Information", message)
         } else {
-            android.widget.Toast.makeText(this, "No device selected", android.widget.Toast.LENGTH_SHORT).show()
+            showMessage("No device selected")
         }
     }
 

@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.snackbar.Snackbar
 import com.nsline22.UniStart.databinding.ActivityMainBinding
 import java.io.IOException
 import java.io.InputStream
@@ -80,17 +79,29 @@ class MainActivity : AppCompatActivity() {
                 setupBluetooth()
             }
         } else {
-            setupBluetooth()
+            val locationPermission = Manifest.permission.ACCESS_FINE_LOCATION
+            val isGranted = ContextCompat.checkSelfPermission(this, locationPermission) == PackageManager.PERMISSION_GRANTED
+
+            if (!isGranted) {
+                ActivityCompat.requestPermissions(this, arrayOf(locationPermission), REQUEST_PERMISSION_CODE)
+            } else {
+                setupBluetooth()
+            }
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION_CODE) {
-            val permission = Manifest.permission.BLUETOOTH_CONNECT
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupBluetooth()
             } else {
+                val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    Manifest.permission.BLUETOOTH_CONNECT
+                } else {
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                }
+
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                     showSettingsDialog()
                 } else {
@@ -102,9 +113,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSettingsDialog() {
+        val message = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            "Bluetooth permission is required. Please grant it in settings."
+        } else {
+            "Location permission is required for Bluetooth. Please grant it in settings."
+        }
+
         val builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("Permission needed")
-        builder.setMessage("For Bluetooth needed permission. Give the permission in the settings.")
+        builder.setMessage(message)
         builder.setPositiveButton("Open app settings") { _, _ ->
             val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             val uri = android.net.Uri.fromParts("package", packageName, null)
@@ -117,7 +134,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Проверяем версию Android перед установкой темы
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             setTheme(R.style.Theme_Nsline22_Legacy)
         }
@@ -135,15 +151,12 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupButtons()
         updateUIForConnectedState(false)
-
-        // Сбрасываем все значения при запуске
         resetAllValues()
 
         requestBluetoothPermission()
         setupSettingsButton()
         setupLogsButton()
         clearLogs()
-
         preloadLogActivityInBackground()
     }
 
@@ -209,7 +222,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
-        binding.connectButton.setOnClickListener {
+        binding.connectButton.setDebouncedClickListener(2000L) {
             if (isConnected) disconnectBluetooth() else {
                 val deviceAddress = sharedPreferences.getString("selected_device", null)
                 if (deviceAddress != null) {
@@ -220,7 +233,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.buttonU.setOnClickListener {
+        binding.buttonU.setDebouncedClickListener(2000L) {
             sendCommand(devicePinCode)
             addToCommandHistory("> Unlock PIN sent")
         }
@@ -384,7 +397,6 @@ class MainActivity : AppCompatActivity() {
             }
             line.startsWith("ETEMP-") -> {
                 val temp = line.substring(6).trim()
-                // Проверяем, что температура валидна
                 if (temp.isNotEmpty() && temp != "nan" && temp != "-127.00") {
                     binding.engineTempStatus.text = "${temp}°C"
                 } else {
@@ -393,7 +405,6 @@ class MainActivity : AppCompatActivity() {
             }
             line.startsWith("STEMP-") -> {
                 val temp = line.substring(6).trim()
-                // Проверяем, что температура валидна
                 if (temp.isNotEmpty() && temp != "nan" && temp != "-127.00") {
                     binding.streetTempStatus.text = "${temp}°C"
                 } else {
@@ -401,12 +412,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             else -> {
-                // Это ответ на команду пользователя - добавляем в логи
                 if (line.isNotEmpty() && !line.startsWith("I-") && !line.startsWith("S-") &&
                     !line.startsWith("L-") && !line.startsWith("T-") && !line.startsWith("V-") &&
                     !line.startsWith("ETEMP-") && !line.startsWith("STEMP-")) {
 
-                    // Скрываем вывод пинкода в логах
                     val filteredLine = if (line.contains(devicePinCode)) {
                         line.replace(devicePinCode, "****")
                     } else {
@@ -486,35 +495,25 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 binding.connectButton.text = getString(R.string.connect)
                 updateUIForConnectedState(false)
-                showMessage("Disconnected or unable to connect")
+                showMessage("Disconnected")
                 stopBlinkingIndicator()
 
-                // Сбрасываем время и дату при отключении
                 esp32Time = "--:--:--"
                 esp32Date = "----/--/--"
 
-                // Сбрасываем все статусы на OFF/0
                 resetAllValues()
             }
         }
     }
 
-    // Новая функция для сброса всех значений
     private fun resetAllValues() {
         runOnUiThread {
-            // Сбрасываем статусы реле и LED
             binding.ignitionStatus.text = "OFF"
             binding.starterStatus.text = "OFF"
             binding.ledStatus.text = "OFF"
-
-            // Сбрасываем напряжение на 0
             binding.voltageStatus.text = "0.0V"
-
-            // Сбрасываем температуру на "--"
             binding.engineTempStatus.text = "--°C"
             binding.streetTempStatus.text = "--°C"
-
-            // Сбрасываем время и дату
             binding.timeTextView.text = esp32Time
             binding.dateTextView.text = esp32Date
         }
@@ -538,7 +537,6 @@ class MainActivity : AppCompatActivity() {
         if (!isConnected) {
             showMessage("Not connected to ESP32")
             if (shouldLog) {
-                // Скрываем пинкод в логах
                 val filteredCommand = if (command.contains(devicePinCode)) {
                     command.replace(devicePinCode, "****")
                 } else {
@@ -552,7 +550,6 @@ class MainActivity : AppCompatActivity() {
         val cleanCommand = command.trim()
 
         if (shouldLog) {
-            // Скрываем пинкод в логах
             val filteredCommand = if (cleanCommand.contains(devicePinCode)) {
                 cleanCommand.replace(devicePinCode, "****")
             } else {
@@ -614,12 +611,8 @@ class MainActivity : AppCompatActivity() {
         }, 500)
     }
 
-    private fun showMessage(message: String) {
-        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
-        snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.snackbar_bg))
-        snackbar.setTextColor(ContextCompat.getColor(this, R.color.snackbar_text))
-        snackbar.show()
-    }
+    // Используется extension function из MessageUtils.kt
+    // showMessage(message) доступен напрямую
 
     public override fun onResume() {
         super.onResume()
