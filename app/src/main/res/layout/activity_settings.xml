@@ -55,8 +55,7 @@
         <!-- Основной контент -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_gravity="center">
@@ -73,8 +72,10 @@
             <!-- Контейнер устройства -->
             <LinearLayout
                 android:id="@+id/deviceInfoContainer"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:background="@drawable/output_background"
                 android:padding="16dp"
@@ -107,8 +108,10 @@
             <!-- Контейнер PIN-кода -->
             <LinearLayout
                 android:id="@+id/pinInfoContainer"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:background="@drawable/output_background"
                 android:padding="16dp"
@@ -154,37 +157,42 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="10dp" />
 
+            <!-- Кнопки действий устройства -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="15dp">
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
+                android:weightSum="2">
 
-            <!-- Кнопка смены PIN -->
-            <Button
-                android:id="@+id/changePinButton"
-                android:layout_width="140dp"
-                android:layout_height="60dp"
-                android:layout_marginEnd="7dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:text="Change PIN"
-                android:textColor="@color/material_dynamic_neutral_variant10"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/ic_pin"
-                android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                <!-- Кнопка смены PIN -->
+                <Button
+                    android:id="@+id/changePinButton"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="7dp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="Change PIN"
+                    android:textColor="@color/material_dynamic_neutral_variant10"
+                    app:cornerRadius="12dp"
+                    android:drawableLeft="@drawable/ic_pin"
+                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
-            <!-- Кнопка синхронизации времени -->
-            <Button
-                android:id="@+id/syncTimeButton"
-                android:layout_width="140dp"
-                android:layout_height="60dp"
-
-                android:backgroundTint="?attr/colorPrimary"
-                android:text="Sync Time"
-                android:textColor="@color/material_dynamic_neutral_variant10"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/ic_sync"
-                android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                <!-- Кнопка синхронизации времени -->
+                <Button
+                    android:id="@+id/syncTimeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="Sync Time"
+                    android:textColor="@color/material_dynamic_neutral_variant10"
+                    app:cornerRadius="12dp"
+                    android:drawableLeft="@drawable/ic_sync"
+                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             </LinearLayout>
 
@@ -199,15 +207,19 @@
 
             <!-- Кнопки управления картами -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="15dp">
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
+                android:weightSum="2">
 
                 <Button
                     android:id="@+id/listCardsButton"
-                    android:layout_width="140dp"
+                    android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="7dp"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="List cards"
@@ -218,8 +230,9 @@
 
                 <Button
                     android:id="@+id/addCardButton"
-                    android:layout_width="140dp"
+                    android:layout_width="0dp"
                     android:layout_height="60dp"
+                    android:layout_weight="1"
                     android:backgroundTint="?attr/colorPrimary"
                     android:text="Add card"
                     android:textColor="@color/material_dynamic_neutral_variant10"
@@ -240,15 +253,16 @@
             <!-- Кнопка сброса -->
             <Button
                 android:id="@+id/factoryResetButton"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginEnd="7dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
                 android:backgroundTint="?attr/colorPrimary"
                 android:text="Reset Settings"
                 android:textColor="@color/material_dynamic_neutral_variant10"
                 app:cornerRadius="12dp"
                 android:drawableLeft="@drawable/ic_reset"
-                android:layout_marginBottom="15dp"
                 android:drawableTint="@color/material_dynamic_neutral_variant10" />
 
             <TextView
