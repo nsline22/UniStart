@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Кнопка Back -->
+        <!-- Заголовок -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,218 +60,535 @@
             android:gravity="center"
             android:layout_gravity="center">
 
+            <!-- Секция Connection -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Connection"
                 android:textColor="@color/material_dynamic_secondary60"
                 android:textSize="16sp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:gravity="center" />
 
-            <!-- Контейнер устройства -->
+            <!-- Пункт Device -->
             <LinearLayout
                 android:id="@+id/deviceInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:background="@drawable/output_background"
                 android:padding="16dp"
-                android:layout_marginBottom="15dp"
-                android:gravity="center"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Device"
-                    android:textColor="@color/material_dynamic_primary60"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_device"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
 
-                <TextView
-                    android:id="@+id/deviceInfoText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="No device selected"
-                    android:textColor="@color/material_dynamic_primary60"
-                    android:textSize="14sp"
-                    android:gravity="center" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Device"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/deviceInfoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No device selected"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
 
             </LinearLayout>
 
-            <!-- Контейнер PIN-кода -->
+            <!-- Пункт PIN Code -->
             <LinearLayout
                 android:id="@+id/pinInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:background="@drawable/output_background"
                 android:padding="16dp"
                 android:layout_marginBottom="15dp"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PIN Code"
-                    android:textColor="@color/material_dynamic_primary60"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_pincode"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
 
-                <TextView
-                    android:id="@+id/pinInfoText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="••••"
-                    android:textColor="@color/material_dynamic_primary60"
-                    android:textSize="14sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="(clickable)"
-                    android:textColor="@color/material_dynamic_secondary60"
-                    android:textSize="10sp"
-                    android:textStyle="bold|italic"
-                    android:layout_marginTop="8dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PIN Code"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/pinInfoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="••••"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
 
             </LinearLayout>
 
+            <!-- Секция Device Actions -->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Device actions"
-                android:textColor="@color/material_dynamic_secondary60"
-                android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Кнопки действий устройства -->
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:text="Device Actions"
+                android:textColor="@color/material_dynamic_secondary60"
+                android:textSize="16sp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center" />
+
+            <!-- Пункт Change PIN -->
+            <LinearLayout
+                android:id="@+id/changePinButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="15dp"
-                android:weightSum="2">
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <!-- Кнопка смены PIN -->
-                <Button
-                    android:id="@+id/changePinButton"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="7dp"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:text="Change PIN"
-                    android:textColor="@color/material_dynamic_neutral_variant10"
-                    app:cornerRadius="12dp"
-                    android:drawableLeft="@drawable/ic_pin"
-                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_pin"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
 
-                <!-- Кнопка синхронизации времени -->
-                <Button
-                    android:id="@+id/syncTimeButton"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:text="Sync Time"
-                    android:textColor="@color/material_dynamic_neutral_variant10"
-                    app:cornerRadius="12dp"
-                    android:drawableLeft="@drawable/ic_sync"
-                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Change PIN"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Update device PIN code"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
 
             </LinearLayout>
 
-            <!-- Секция управления картами -->
+            <!-- Пункт Sync Time -->
+            <LinearLayout
+                android:id="@+id/syncTimeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_sync"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sync Time"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Synchronize device time"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/configureStartupButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_startup"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Configure device startup"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Configure enabled options like ignition at startup (in development)"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/calibrateFuelButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calibrate"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calibrate fuel level"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calibrate fuel level (in development)"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
+
+            </LinearLayout>
+
+            <!-- Секция Cards -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Cards"
                 android:textColor="@color/material_dynamic_secondary60"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center" />
 
-            <!-- Кнопки управления картами -->
+            <!-- Пункт List Cards -->
             <LinearLayout
+                android:id="@+id/listCardsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="15dp"
-                android:weightSum="2">
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <Button
-                    android:id="@+id/listCardsButton"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="7dp"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:text="List cards"
-                    android:textColor="@color/material_dynamic_neutral_variant10"
-                    app:cornerRadius="12dp"
-                    android:drawableLeft="@drawable/ls"
-                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ls"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
 
-                <Button
-                    android:id="@+id/addCardButton"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:backgroundTint="?attr/colorPrimary"
-                    android:text="Add card"
-                    android:textColor="@color/material_dynamic_neutral_variant10"
-                    app:cornerRadius="12dp"
-                    android:drawableLeft="@drawable/add"
-                    android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="List Cards"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View all stored cards"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
 
             </LinearLayout>
 
+            <!-- Пункт Add Card -->
+            <LinearLayout
+                android:id="@+id/addCardButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/add"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Card"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add new card to device"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
+
+            </LinearLayout>
+
+            <!-- Секция Reset -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reset"
                 android:textColor="@color/material_dynamic_secondary60"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center" />
 
-            <!-- Кнопка сброса -->
-            <Button
+            <!-- Пункт Reset Settings -->
+            <LinearLayout
                 android:id="@+id/factoryResetButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@drawable/output_background"
+                android:padding="16dp"
                 android:layout_marginBottom="15dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:text="Reset Settings"
-                android:textColor="@color/material_dynamic_neutral_variant10"
-                app:cornerRadius="12dp"
-                android:drawableLeft="@drawable/ic_reset"
-                android:drawableTint="@color/material_dynamic_neutral_variant10" />
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_reset"
+                    android:tint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reset Settings"
+                        android:textColor="@color/material_dynamic_primary60"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Factory reset device"
+                        android:textColor="@color/material_dynamic_secondary60"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    android:tint="@color/material_dynamic_secondary60" />
+
+            </LinearLayout>
+
+            <!-- Секция About -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="About ⓘ"
                 android:textColor="@color/material_dynamic_secondary60"
                 android:textSize="16sp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
