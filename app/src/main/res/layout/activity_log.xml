@@ -133,18 +133,33 @@
             android:layout_marginEnd="8dp"
             android:elevation="2dp" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/buttonSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"
-            android:backgroundTint="?attr/colorPrimary"
-            android:textColor="@color/material_dynamic_neutral_variant10"
-            android:padding="12dp"
-            app:cornerRadius="12dp"
-            android:drawableRight="@drawable/send"
-            android:drawableTint="@color/material_dynamic_neutral_variant10"
-            android:elevation="2dp"/>
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/output_background"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:textColor="@color/material_dynamic_primary60"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/send"
+                android:tint="?attr/colorPrimary"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

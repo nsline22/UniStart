@@ -222,6 +222,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
+        // Connect button - теперь это LinearLayout
         binding.connectButton.setDebouncedClickListener(2000L) {
             if (isConnected) disconnectBluetooth() else {
                 val deviceAddress = sharedPreferences.getString("selected_device", null)
@@ -233,6 +234,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Unlock button - теперь это LinearLayout
         binding.buttonU.setDebouncedClickListener(2000L) {
             sendCommand(devicePinCode)
             addToCommandHistory("> Unlock PIN sent")
@@ -289,7 +291,7 @@ class MainActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     isConnected = true
-                    binding.connectButton.text = getString(R.string.disconnect)
+                    binding.connectButtonText.text = getString(R.string.disconnect)
                     showMessage("Connected to ${device.name}")
                     updateUIForConnectedState(true)
                     stopBlinkingIndicator()
@@ -493,7 +495,7 @@ class MainActivity : AppCompatActivity() {
             inputStream = null
 
             runOnUiThread {
-                binding.connectButton.text = getString(R.string.connect)
+                binding.connectButtonText.text = getString(R.string.connect)
                 updateUIForConnectedState(false)
                 showMessage("Disconnected")
                 stopBlinkingIndicator()
@@ -597,7 +599,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUIForConnectedState(connected: Boolean) {
-        binding.connectButton.text = if (connected) getString(R.string.disconnect) else getString(R.string.connect)
+        binding.connectButtonText.text = if (connected) getString(R.string.disconnect) else getString(R.string.connect)
         handler.postDelayed({
             val indicator = binding.connectionIndicator
             val color = if (connected) {
@@ -610,9 +612,6 @@ class MainActivity : AppCompatActivity() {
             indicator.background = drawable
         }, 500)
     }
-
-    // Используется extension function из MessageUtils.kt
-    // showMessage(message) доступен напрямую
 
     public override fun onResume() {
         super.onResume()
