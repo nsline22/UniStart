@@ -4,15 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background_dark"
-    android:padding="16dp">
+    android:background="@color/background_dark">
 
     <!-- Кнопка назад -->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp">
+        android:padding="5dp"
+        android:elevation="4dp"
+        android:background="@color/background_dark"
+        android:outlineProvider="bounds"
+        android:paddingEnd="10dp"
+        android:paddingStart="10dp">
 
         <!-- Кнопка назад -->
         <Button
@@ -54,7 +57,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/output_background">
+        android:layout_margin="16dp"
+        android:background="@drawable/output_background"
+        android:elevation="2dp"
+        android:outlineProvider="bounds">
 
         <!-- ScrollView с инерцией для логов -->
         <ScrollView
@@ -106,7 +112,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="16dp">
+        android:padding="16dp"
+        android:paddingTop="0dp">
 
         <EditText
             android:id="@+id/commandEditText"
@@ -123,7 +130,8 @@
             android:textColor="?attr/colorPrimary"
             android:textColorHint="@color/edittexthint_color"
             android:padding="12dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:elevation="2dp" />
 
         <Button
             android:id="@+id/buttonSend"
@@ -135,7 +143,8 @@
             android:padding="12dp"
             app:cornerRadius="12dp"
             android:drawableRight="@drawable/send"
-            android:drawableTint="@color/material_dynamic_neutral_variant10"/>
+            android:drawableTint="@color/material_dynamic_neutral_variant10"
+            android:elevation="2dp"/>
 
     </LinearLayout>
 
