@@ -111,6 +111,11 @@ class SettingsActivity : AppCompatActivity() {
             MainActivity.instance?.sendCommandDirectly("A")
         }
 
+        binding.calibrateFuelButton.setDebouncedClickListener(2000L) {
+            MainActivity.instance?.sendCommandDirectly("C")
+            showMessage("Fuel calibration command sent")
+        }
+
         binding.factoryResetButton.setOnClickListener {
             showFactoryResetConfirmation()
         }

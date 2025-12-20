@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private var devicePinCode = "9374"
 
     private var esp32Time = "--:--:--"
-    private var esp32Date = "----/--/--"
+    private var esp32Date = "--/--"
 
     private val dataBuffer = StringBuilder()
 
@@ -413,10 +413,19 @@ class MainActivity : AppCompatActivity() {
                     binding.streetTempStatus.text = "--°C"
                 }
             }
+            line.startsWith("F-") -> {
+                val fuelLevel = line.substring(2).trim()
+                if (fuelLevel.isNotEmpty() && fuelLevel != "nan") {
+                    val fuelInt = fuelLevel.toFloatOrNull()?.toInt() ?: 0
+                    binding.fuelLevel.text = "${fuelInt}%"
+                } else {
+                    binding.fuelLevel.text = "--%"
+                }
+            }
             else -> {
                 if (line.isNotEmpty() && !line.startsWith("I-") && !line.startsWith("S-") &&
                     !line.startsWith("L-") && !line.startsWith("T-") && !line.startsWith("V-") &&
-                    !line.startsWith("ETEMP-") && !line.startsWith("STEMP-")) {
+                    !line.startsWith("ETEMP-") && !line.startsWith("STEMP-") && !line.startsWith("F-")) {
 
                     val filteredLine = if (line.contains(devicePinCode)) {
                         line.replace(devicePinCode, "****")
@@ -501,7 +510,7 @@ class MainActivity : AppCompatActivity() {
                 stopBlinkingIndicator()
 
                 esp32Time = "--:--:--"
-                esp32Date = "----/--/--"
+                esp32Date = "--/--"
 
                 resetAllValues()
             }
@@ -516,6 +525,7 @@ class MainActivity : AppCompatActivity() {
             binding.voltageStatus.text = "0.0V"
             binding.engineTempStatus.text = "--°C"
             binding.streetTempStatus.text = "--°C"
+            binding.fuelLevel.text = "--%"
             binding.timeTextView.text = esp32Time
             binding.dateTextView.text = esp32Date
         }
